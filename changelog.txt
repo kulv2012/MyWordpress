@@ -1,0 +1,7 @@
+1.修复重定向问题
+wp-includes/canonical.php 39 //haiwen
+http://www.poluoluo.com/jzxy/201203/161915.html
+40 //function redirect_canonical( $requested_url = null, $do_redirect = true
+) {
+41 function redirect_canonical( $requested_url = null, $do_redirect = false ) {
+

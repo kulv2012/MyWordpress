@@ -1,0 +1,54 @@
+digraph G {
+rankdir = TB;
+compound=true;
+fontname = "KaiTi_GB2312";
+ranksep=.75;
+node [fontname = "KaiTi_GB2312", fontsize = 16, color="skyblue", shape="record",width=.1,height=.1];
+edge [fontname = "KaiTi_GB2312", fontsize = 16, color="crimson", style="solid"];
+
+subgraph  cluster_ngx_event_pipe_s {
+	bgcolor="grey";
+	label="ngx_event_pipe_s event pipe结构";
+	ngx_event_pipe_s [label="{upstream|downstream}|free_raw_bufs|{last_in|<in>in}|{<out>out|last_out}|{free|busy}\
+|{<input_filter>input_filter|<output_filter>output_filter}|preread_bufs"];
+}
+
+subgraph  cluster_FCGI_buf{
+ngx_buf_t_FCGI_1 [fontsize=14 label="<head>FCGI数据块buf1|{{head|<data0>data|padding}|FCGI_STDOUT}\
+|{{head|<data1>data|padding}|FCGI_STDOUT}|{{head|<data2>data|padding}|FCGI_STDOUT}"];
+
+}
+
+{
+	rank = same;
+	html_buf_1 [label="{<head>start|<pos>pos|end}|{<s>shadow|last_shadow=0}"];
+	html_buf_2 [label="····"];
+	html_buf_3 [label="{<head>start|<pos>pos|end}|{<s>shadow|last_shadow=1}"];
+}
+
+{
+	rank = same;
+	chain1 [label="{<h>ngx_chain_s|{<buf>buf|<next>next}}"];
+	chain2 [label="····"];
+	chain3 [label="{<h>ngx_chain_s|{<buf>buf|<next>next}}"];
+	chain4 [label="{ngx_chain_s|其他buf头链表|指向其他FCGI裸数据}" color="red"];
+}
+
+chain1:buf -> html_buf_1:head;
+chain1:next -> chain2:h;
+chain2  -> html_buf_2 ;
+chain2  -> chain3:h;	
+chain3:buf -> html_buf_3:head;
+chain3:next -> chain4 [color="blue"];	
+
+ngx_event_pipe_s:in -> chain1:h [label="php返回的HTML数据链表头"];
+html_buf_1:pos -> ngx_buf_t_FCGI_1:data0 [label="共享数据"];
+html_buf_1 -> html_buf_2:head [color="black"];
+html_buf_2  -> ngx_buf_t_FCGI_1:data1 [label="共享数据"];
+html_buf_2 -> html_buf_3:head [color="black"];
+html_buf_3:pos -> ngx_buf_t_FCGI_1:data2 [label="共享数据"];
+html_buf_3:s -> ngx_buf_t_FCGI_1:head [color="black" label="指向FCGI大buf的头部"];
+
+
+
+}

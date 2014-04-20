@@ -1,33 +1,44 @@
 ﻿=== Plugin Name ===
 Contributors: zemanta
-Tags: related,posts,post,related posts,plugin
+Tags: related,posts,post,related posts,plugin,seo
 License: GPLv2
 Requires at least: 3.3
-Tested up to: 3.6
-Stable tag: 2.8
+Tested up to: 3.9
+Stable tag: 3.4
 
 WordPress Related Posts generates a list of related posts with thumbnails and gives you click-through statistics.
 
 == Description ==
 
-Quickly increase your readers' engagement with your posts by adding Related Posts in the footer of your content. The plugin also delivers statistics about Pageviews and Clicks\*. It supports different styles, thumbnails and is fully customizable.
+Quickly increase your readers' engagement with your posts by adding Related Posts in the footer of your content. Automatically added Related Posts can increase your internal traffic up to 10%. Just install and activate. To attract attention and improve SEO, link out to Related Posts across the web from your compose screen. Search for posts and hand-pick them with ease. Recommendations are provided by Zemanta's world-class semantic service, including advanced analytics.
+The plugin also delivers statistics about Pageviews and Clicks*. It supports different styles, thumbnails and is fully customizable.
 
 After installation, go to Settings -> Related Posts in your plugins list and Turn on Advanced Features!
 
-\* Real time traffic analytics are provided via third party service.
+
+[Click here to read more about this plugin.](http://zem.si/1kc5j9Z)
+
+
+**Share the Link Love**
+
+[vimeo http://vimeo.com/91619827]
+
+  *  Note: Real time traffic analytics are provided via third party service.
+
 
 == Frequently Asked Questions ==
+
+= What does this plugin do? =
+
+It places a list of links with thumbnails at the bottom of your posts. It increases pageviews and engages readers to stay on your site longer and discover more of your content.  It also recommends related posts from across the web and in turn promotes your posts to other users. In this way you get new unique visitors to your site and improve SEO.
 
 = Why should I use this plugin and not any other? =
 
 WordPress Related Posts is constantly improved to bring you the highest rates of audience engagement with your content. Our highest Click-Through rates speak for themselves.
 
-= What does this plugin do? =
-
-It places a list of links with thumbnails at the bottom of your posts. It increases pageviews and engages readers to stay on your site longer and discover more of your content.
-
 = Are there any settings? Plenty! =
 
+* responsive themes
 * thumbnail size, style
 * number of posts
 * display post excerpt, publish date, number of comments
@@ -38,9 +49,13 @@ It places a list of links with thumbnails at the bottom of your posts. It increa
 
 Yes, related posts are responsive so they adapt to the screen size to ensure maximum click-through rates.
 
-= Why does Zemanta have 3 similar plugins? What's the difference between them? =
+= Can I customize the widget? =
 
-We adopted the principle of having three "release channels". You can try the most experimental (still stable!) features in [Related Posts](http://wordpress.org/extend/plugins/related-posts/ "Related Posts"). The more advanced ones are in [WordPress Related Posts](http://wordpress.org/extend/plugins/wordpress-23-related-posts-plugin/ "WordPress Related Posts"). If you're looking for the Professional version go for [Related Posts by Zemanta](http://wordpress.org/extend/plugins/related-posts-by-zemanta/ "Related Posts by Zemanta").
+Yes, Zemanta is offered in different themes which you can also customize with simple CSS.
+
+= Will Zemanta steal my "link-juice"? =
+
+No, Zemanta does not use redirects and is juice friendly. :)
 
 == Installation ==
 
@@ -74,6 +89,48 @@ New thumbnailer might break backwards compatibility for blogs with custom thumbn
 Fix for security vulnerability. Upgrade immediately.
 
 == Changelog ==
+
+= 3.4 =
+* Added support for HTTPS dashboard
+* More organized settings
+* Option to subscribe to email newsletter
+* Moved all links to plugin settings under Settings
+* Improved compatibility with Editorial Assistant
+
+= 3.3.3 =
+* Fixed Zemanta Readside plugins incompatibility
+* Uninstallation added
+* Fixed migration bugs
+
+= 3.3.2 =
+* Changed default thumbnail title to image file name
+* Bug fixes for thumbnailer
+* Fixed compatibility issues with Open Graph plugins 
+
+= 3.3.1 =
+* Added setting for admins to restrict the ability to edit automatically added Related posts to admins only
+* Getting ready to reorganize settings page
+
+= 3.3 =
+* Fixed compatibility issues with Zemanta Editorial Assistant
+* Fixed transparency for images on settings page
+
+= 3.2 =
+* Bug fixes for "Edit related posts" feature
+* Changed URL for static content
+* Added settings to fix custom size thumbnails issues (re-generating thumbnails might take a few minutes)
+
+= 3.1 =
+* Related content (articles) on compose screen for all users with English WordPress interface
+* Language detection for WordPressP interface: non-English users don't get the widget, existing ones get opt-out
+
+= 3.0 =
+* Opt-out for Related recommendations (articles)
+* Improved caching
+
+= 2.9 =
+* Themes are now included with the plugin to simplify loading and customization
+* Simplified javascript loading
 
 = 2.8 =
 * New thumbnailer

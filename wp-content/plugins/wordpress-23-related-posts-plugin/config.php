@@ -1,8 +1,9 @@
 <?php
 
-define('WP_RP_STATIC_BASE_URL', 'http://dtmvdvtzf8rz0.cloudfront.net/static/');
-define('WP_RP_STATIC_THEMES_PATH', 'wp-rp-css/');
+define('WP_RP_STATIC_BASE_URL', 'https://wprpp.s3.amazonaws.com/static/');
+define('WP_RP_STATIC_THEMES_PATH', 'static/themes/');
 define('WP_RP_STATIC_JSON_PATH', 'json/');
+define('WP_RP_CONTENT_BASE_URL', 'https://wprpp.s3.amazonaws.com/static/');
 
 define("WP_RP_DEFAULT_CUSTOM_CSS",
 ".related_post_title {
@@ -20,15 +21,14 @@ define('WP_RP_THUMBNAILS_NAME', 'wp_rp_thumbnail');
 define('WP_RP_THUMBNAILS_PROP_NAME', 'wp_rp_thumbnail_prop');
 define('WP_RP_THUMBNAILS_WIDTH', 150);
 define('WP_RP_THUMBNAILS_HEIGHT', 150);
+define('WP_RP_CUSTOM_THUMBNAILS_WIDTH', 150);
+define('WP_RP_CUSTOM_THUMBNAILS_HEIGHT', 150);
 define('WP_RP_THUMBNAILS_DEFAULTS_COUNT', 31);
 
 define("WP_RP_MAX_LABEL_LENGTH", 32);
 
 define("WP_RP_CTR_DASHBOARD_URL", "http://d.zemanta.com/");
-define("WP_RP_STATIC_CTR_PAGEVIEW_FILE", "js/pageview.js");
-
-define("WP_RP_STATIC_RECOMMENDATIONS_JS_FILE", "js/recommendations.js");
-define("WP_RP_STATIC_RECOMMENDATIONS_CSS_FILE", "wp-rp-css/recommendations.css");
+define("WP_RP_STATIC_LOADER_FILE", "js/loader.js");
 
 define("WP_RP_STATIC_INFINITE_RECS_JS_FILE", "js/infiniterecs.js");
 define("WP_RP_STATIC_PINTEREST_JS_FILE", "js/pinterest.js");
@@ -44,9 +44,10 @@ define("WP_RP_RECOMMENDATIONS_NUM_PREGENERATED_POSTS", 50);
 
 define("WP_RP_THUMBNAILS_NUM_PREGENERATED_POSTS", 50);
 
-global $wp_rp_options, $wp_rp_meta;
+global $wp_rp_options, $wp_rp_meta, $wp_rp_global_notice_pages;
 $wp_rp_options = false;
 $wp_rp_meta = false;
+$wp_rp_global_notice_pages = array('plugins.php', 'index.php', 'update-core.php');
 
 function wp_rp_get_options() {
 	global $wp_rp_options, $wp_rp_meta;
@@ -97,15 +98,23 @@ function wp_rp_update_options($new_options) {
 	global $wp_rp_options;
 
 	$new_options = (array) $new_options;
-
 	$r = update_option('wp_rp_options', $new_options);
-
 	if($r && $wp_rp_options !== false) {
 		$wp_rp_options->exchangeArray($new_options);
 	}
 
 	return $r;
 }
+
+function wp_rp_set_global_notice() {
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['global_notice'] = array(
+		'title' => 'I\'ve installed Wordpress Related Posts plugin. Now what?',
+		'message' => 'Checkout how you can <a target="_blank" href="http://zem.si/1kGo9V6">create awesome content</a>. Hint: it\'s not all about YOU ;-)'
+	);
+	update_option('wp_rp_meta', $wp_rp_meta);
+}
+
 
 function wp_rp_activate_hook() {
 	wp_rp_get_options();
@@ -131,8 +140,14 @@ function wp_rp_upgrade() {
 
 	if($version) {
 		if(version_compare($version, WP_RP_VERSION, '<')) {
-			call_user_func('wp_rp_migrate_' . str_replace('.', '_', $version));
-			wp_rp_upgrade();
+			$upgrade_call = 'wp_rp_migrate_' . str_replace('.', '_', $version);
+			if (is_callable($upgrade_call)) {
+				call_user_func($upgrade_call);
+				wp_rp_upgrade();
+			}
+			else {
+				wp_rp_install();
+			}
 		}
 	} else {
 		wp_rp_install();
@@ -184,14 +199,16 @@ function wp_rp_install() {
 		'name' => '',
 		'email' => '',
 		'remote_notifications' => array(),
+		'global_notice' => null,
 		'turn_on_button_pressed' => false,
 		'show_statistics' => false,
 		'show_traffic_exchange' => false,
-		'show_zemanta_linky_option' => true
+		'show_zemanta_linky_option' => true,
+		'classic_user' => strpos(get_bloginfo('language'), 'en') === 0 // Enable only if "any" english is the default language
 	);
 
 	$wp_rp_options = array(
-		'related_posts_title'			=> __('Related Posts', 'wp_related_posts'),
+		'related_posts_title'			=> __('More from my site', 'wp_related_posts'),
 		'max_related_posts'			=> 6,
 		'exclude_categories'			=> '',
 		'on_single_post'			=> true,
@@ -202,26 +219,20 @@ function wp_rp_install() {
 		'promoted_content_enabled'	=> false,
 		'enable_themes'				=> false,
 		'traffic_exchange_enabled' => false,
+		'custom_size_thumbnail_enabled'	=> false,
+		'custom_thumbnail_width' 	=> WP_RP_CUSTOM_THUMBNAILS_WIDTH,
+		'custom_thumbnail_height' 	=> WP_RP_CUSTOM_THUMBNAILS_HEIGHT,
 		'thumbnail_use_custom'			=> false,
 		'thumbnail_custom_field'		=> false,
 		'display_zemanta_linky'			=> false,
-
-		'mobile' => array(
-			'display_comment_count'			=> false,
-			'display_publish_date'			=> false,
-			'display_excerpt'			=> false,
-			'display_thumbnail'			=> false,
-			'excerpt_max_length'			=> 200,
-			'theme_name' 				=> 'm-modern.css',
-			'theme_custom_css'			=> WP_RP_DEFAULT_CUSTOM_CSS,
-		),
+		'only_admins_can_edit_related_posts' => false,
 		'desktop' => array(
 			'display_comment_count'			=> false,
 			'display_publish_date'			=> false,
 			'display_thumbnail'			=> false,
 			'display_excerpt'			=> false,
 			'excerpt_max_length'			=> 200,
-			'theme_name' 				=> 'vertical.css',
+			'theme_name' 				=> 'vertical-m.css',
 			'theme_custom_css'			=> WP_RP_DEFAULT_CUSTOM_CSS,
 			'custom_theme_enabled' => false,
 		)
@@ -229,8 +240,133 @@ function wp_rp_install() {
 
 	update_option('wp_rp_meta', $wp_rp_meta);
 	update_option('wp_rp_options', $wp_rp_options);
-
+	wp_rp_set_global_notice();
 	wp_rp_related_posts_db_table_install();
+}
+
+function wp_rp_is_classic() {
+	$meta = wp_rp_get_meta();
+	if (isset($meta['classic_user']) && $meta['classic_user']) {
+		return true;
+	}
+	return false;
+}
+
+function wp_rp_migrate_3_3_3() {
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '3.4';
+	$wp_rp_meta['new_user'] = false;
+	update_option('wp_rp_meta', $wp_rp_meta);
+
+	wp_rp_set_global_notice();
+}
+
+function wp_rp_migrate_3_3_2() {
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '3.3.3';
+	$wp_rp_meta['new_user'] = false;
+	update_option('wp_rp_meta', $wp_rp_meta);
+}
+
+function wp_rp_migrate_3_3_1() {
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '3.3.2';
+	$wp_rp_meta['new_user'] = false;
+	update_option('wp_rp_meta', $wp_rp_meta);
+}
+
+function wp_rp_migrate_3_3() {
+	global $wpdb;
+
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '3.3.1';
+	$wp_rp_meta['new_user'] = false;
+	$wp_rp_options = get_option('wp_rp_options');
+	$wp_rp_options['only_admins_can_edit_related_posts'] = false;
+	update_option('wp_rp_meta', $wp_rp_meta);
+	update_option('wp_rp_options', $wp_rp_options);
+}
+
+function wp_rp_migrate_3_2() {
+	global $wpdb;
+
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '3.3';
+	$wp_rp_meta['new_user'] = false;
+	if (floatval($wp_rp_meta['first_version']) < 2.8 && strpos(get_bloginfo('language'), 'en') === 0) { // Enable widget to all "old" users out there (old = users that started with plugin version 2.7 or below), that have their interface in english.
+		$wp_rp_meta['classic_user'] = true;
+	}
+	update_option('wp_rp_meta', $wp_rp_meta);
+
+}
+
+function wp_rp_migrate_3_1() {
+	global $wpdb;
+
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '3.2';
+	$wp_rp_meta['new_user'] = false;
+	if (floatval($wp_rp_meta['first_version']) < 2.8 && strpos(get_bloginfo('language'), 'en') === 0) { // Enable widget to all "old" users out there (old = users that started with plugin version 2.7 or below), that have their interface in english.
+		$wp_rp_meta['classic_user'] = true;
+	}
+	$wp_rp_options = get_option('wp_rp_options');
+	$wp_rp_options['custom_size_thumbnail_enabled'] = false;
+	$wp_rp_options['custom_thumbnail_width'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+	$wp_rp_options['custom_thumbnail_height'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+
+	update_option('wp_rp_meta', $wp_rp_meta);
+	update_option('wp_rp_options', $wp_rp_options);
+
+}
+
+
+function wp_rp_migrate_3_0() {
+	global $wpdb;
+
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '3.1';
+	$wp_rp_meta['new_user'] = false;
+	if (floatval($wp_rp_meta['first_version']) < 2.8 && strpos(get_bloginfo('language'), 'en') === 0) { // Enable widget to all "old" users out there (old = users that started with plugin version 2.7 or below), that have their interface in english.
+		$wp_rp_meta['classic_user'] = true;
+    }
+	$wp_rp_options = get_option('wp_rp_options');
+	$wp_rp_options['custom_size_thumbnail_enabled'] = false;
+	$wp_rp_options['custom_thumbnail_width'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+	$wp_rp_options['custom_thumbnail_height'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+
+
+	update_option('wp_rp_meta', $wp_rp_meta);
+	update_option('wp_rp_options', $wp_rp_options);
+}
+
+function wp_rp_migrate_2_9() {
+	global $wpdb;
+
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '3.0';
+	$wp_rp_meta['new_user'] = false;
+	$wp_rp_options = get_option('wp_rp_options');
+	$wp_rp_options['custom_size_thumbnail_enabled'] = false;
+	$wp_rp_options['custom_thumbnail_width'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+	$wp_rp_options['custom_thumbnail_height'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+
+	update_option('wp_rp_meta', $wp_rp_meta);
+	update_option('wp_rp_options', $wp_rp_options);
+}
+
+function wp_rp_migrate_2_8() {
+	global $wpdb;
+
+	$wp_rp_meta = get_option('wp_rp_meta');
+	$wp_rp_meta['version'] = '2.9';
+	$wp_rp_meta['new_user'] = false;
+	$wp_rp_options = get_option('wp_rp_options');
+	$wp_rp_options['custom_size_thumbnail_enabled'] = false;
+	$wp_rp_options['custom_thumbnail_width'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+	$wp_rp_options['custom_thumbnail_height'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+
+	update_option('wp_rp_meta', $wp_rp_meta);
+	update_option('wp_rp_options', $wp_rp_options);
 }
 
 function wp_rp_migrate_2_7() {
@@ -239,10 +375,16 @@ function wp_rp_migrate_2_7() {
 	$wp_rp_meta = get_option('wp_rp_meta');
 	$wp_rp_meta['version'] = '2.8';
 	$wp_rp_meta['new_user'] = false;
+	$wp_rp_meta['classic_user'] = false;
+	$wp_rp_options = get_option('wp_rp_options');
+	$wp_rp_options['custom_size_thumbnail_enabled'] = false;
+	$wp_rp_options['custom_thumbnail_width'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
+	$wp_rp_options['custom_thumbnail_height'] = WP_RP_CUSTOM_THUMBNAILS_WIDTH;
 
 	$wpdb->query("DELETE FROM $wpdb->postmeta WHERE meta_key IN ('_wp_rp_extracted_image_url', '_wp_rp_extracted_image_url_full')");
 
 	update_option('wp_rp_meta', $wp_rp_meta);
+	update_option('wp_rp_options', $wp_rp_options);
 }
 
 function wp_rp_migrate_2_6() {

@@ -220,6 +220,10 @@ class iNoveOptions {
 							<input name="menu_type" type="radio" value="categories" <?php if($options['menu_type'] == 'categories') echo "checked='checked'"; ?> />
 							 <?php _e('Show categories as menu.', 'inove'); ?>
 						</label>
+                        <label><!--INove主题导航同时显示页面也分类-->
+                            <input name="menu_type" type="radio" value="pages_and_categories" <?php if($options["menu_type"] == "pages_and_categories") echo "checked='checked'"; ?> />
+                            <?php _e('Show All.', 'inove'); ?>
+                        </label>
 					</td>
 				</tr>
 			</tbody>

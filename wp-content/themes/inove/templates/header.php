@@ -27,12 +27,21 @@
 	<!-- menus START -->
 	<ul id="menus">
 		<li class="<?php echo($home_menu); ?>"><a class="home" title="<?php _e('Home', 'inove'); ?>" href="<?php echo get_option('home'); ?>/"><?php _e('Home', 'inove'); ?></a></li>
+        <?php //INove主题导航同时显示页面也分类
+            if($options['menu_type'] == 'categories' || $options['menu_type'] == 'pages_and_categories') {
+                wp_list_categories('title_li=0&orderby=name&show_count=0');
+            }
+            if($options['menu_type'] == 'pages' || $options['menu_type'] == 'pages_and_categories') {
+                wp_list_pages('title_li=0&sort_column=menu_order');
+            }
+        ?>
 		<?php
-			if($options['menu_type'] == 'categories') {
+			/*//INove主题导航同时显示页面也分类
+               if($options['menu_type'] == 'categories') {
 				wp_list_categories('title_li=0&orderby=name&show_count=0');
 			} else {
 				wp_list_pages('title_li=0&sort_column=menu_order');
-			}
+			}*/
 		?>
 		<li><a class="lastmenu" href="javascript:void(0);"></a></li>
 	</ul>

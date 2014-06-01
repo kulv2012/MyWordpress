@@ -1,9 +1,9 @@
 === Share Buttons by AddToAny ===
 Contributors: micropat, addtoany
-Tags: sharing, share, share this, bookmarking, social, share button, share buttons, share links, social share, social sharing, social bookmarking, social bookmarks, bookmark, bookmarks, save, Post, posts, page, pages, images, image, admin, statistics, stats, links, plugin, shortcode, sidebar, widget, email, e-mail, print, seo, button, delicious, google, tumblr, linkedin, digg, reddit, facebook, facebook share, facebook like, like, twitter, twitter button, twitter share, tweet, +1, plus 1, google plus, google plus one, plus one, pinterest, pin, pin it, pinit, buffer, stumbleupon, bitly, technorati, lockerz, addthis, sociable, sharedaddy, sharethis, shareaholic, icon, icons, vector, SVG, wpmu, Add to Any, AddToAny
+Tags: sharing, share, share this, bookmarking, social, share button, share buttons, share links, social share, social sharing, social bookmarking, social bookmarks, bookmark, bookmarks, save, Post, posts, page, pages, images, image, admin, statistics, stats, links, plugin, shortcode, sidebar, widget, responsive, email, e-mail, print, seo, button, delicious, google, tumblr, linkedin, digg, reddit, facebook, facebook share, facebook like, like, twitter, twitter button, twitter share, tweet, +1, plus 1, google plus, google plus one, plus one, pinterest, pin, pin it, pinit, wanelo, buffer, stumbleupon, bitly, technorati, lockerz, addthis, sociable, sharedaddy, sharethis, shareaholic, icon, icons, vector, SVG, floating, floating buttons, wpmu, Add to Any, AddToAny
 Requires at least: 2.8
 Tested up to: 3.9.1
-Stable tag: 1.2.9.3
+Stable tag: 1.3.1
 
 Share buttons for WordPress including AddToAny's universal sharing button, Facebook, Twitter, Google+, Pinterest, StumbleUpon and many more.
 
@@ -15,15 +15,21 @@ AddToAny's customizable platform and social share icons let you optimize your si
 
 = Share Buttons =
 
-* **New**: Vector sharing buttons (SVG sharing icons)
+* **New**: Floating share buttons — responsive & customizable, vertical & horizontal
+* Vector sharing buttons (SVG sharing icons)
 * Universal Share Button and Smart Menu
 * Sharing Kit for individual share links
-* **New**: Custom sharing icons
+* Custom sharing icons
 * Choose from over 100 individual services
 * 3rd party buttons include the Facebook Like Button, Twitter Tweet Button, Pinterest Pin It Button, Google+ Share Button and Google +1 Button
 * Universal email sharing makes it easy to share via Gmail, Yahoo! Mail, Outlook.com (Hotmail), AOL Mail, and any other web and native apps
 
 <a href="http://www.addtoany.com/" title="Sharing buttons">Share Buttons</a> demo
+
+= Custom Placement =
+* Before content, after content, or before & after content
+* Vertical Floating Share Bar, and Horizontal Floating Share Bar
+* As a widget within a theme, and programmatically
 
 = Analytics Integration =
 
@@ -34,12 +40,13 @@ AddToAny's customizable platform and social share icons let you optimize your si
 
 * Loads asynchronously so your content always loads before or in parallel with AddToAny
 * Supports theme features such as HTML5 & XHTML, widgets, infinite scroll, post formats
+* No signup, no login, no account necessary
 
 = Mobile Optimized & Retina Ready =
 
-* AddToAny gives users the choice in sharing from a service's native app or from a web app
-* For example, choose between Twitter's native app or Twitter's mobile web app
-* AddToAny's SVG icons are lightweight and pixel-perfect at any size
+* AddToAny gives users the choice in sharing from a service's native app or from a web app. For example, choose between Twitter's native app or Twitter's mobile web app
+* Responsive Floating Share Buttons are mobile ready by default, and configurable breakpoints make floating buttons work with any theme
+* AddToAny's SVG icons are super-lightweight and pixel-perfect at any size
 
 = Customizable & Extensible =
 
@@ -52,7 +59,7 @@ AddToAny's customizable platform and social share icons let you optimize your si
 = Wide Support =
 
 * Over 8 years of active development 
-* Over 2.9 million downloads
+* Over 3 million downloads
 * Translated into dozens of languages
 * Ongoing support from the community
 
@@ -270,6 +277,21 @@ Upload the plugin directory (including all files and directories within) to the 
 6. Color chooser for your universal share menu
 
 == Changelog ==
+
+= 1.3.1 =
+* Floating share buttons are now responsive by default
+* Responsive breakpoints configurable in Floating options
+* "Use default CSS" must be enabled in Advanced Options for responsiveness
+
+= 1.3.0.1 =
+* Apply universal sharing button toggle to floating buttons
+
+= 1.3 =
+* Floating share buttons (major new feature!)
+* AddToAny Vertical Share Bar
+* AddToAny Horizontal Share Bar
+* Update admin interface
+* Update options
 
 = 1.2.9.3 =
 * Prevent script output in feeds on some sites
@@ -1133,6 +1155,12 @@ Upload the plugin directory (including all files and directories within) to the 
 * PHP4 legacy and compatibility fixes
 
 == Upgrade Notice ==
+
+= 1.3.1 =
+Floating share buttons are now responsive by default, ready for mobile & tablets. You can toggle responsiveness and set responsive breakpoints in the "Floating" tab of Settings > AddToAny.
+
+= 1.3 =
+Floating Share Buttons are now available! Click the "Floating" tab in Settings > AddToAny.
 
 = 0.9.9.7 =
 Upgrade now if you haven't upgraded in a while and are using WordPress 2.8+. This release incorporates a number of important fixes and performance enhacements, including some new sharing features that you'll love.

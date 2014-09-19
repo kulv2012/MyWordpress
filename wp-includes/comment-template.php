@@ -578,9 +578,10 @@ function comments_number( $zero = false, $one = false, $more = false, $deprecate
 
 	if ( $number > 1 )
 		$output = str_replace('%', number_format_i18n($number), ( false === $more ) ? __('% Comments') : $more);
-	elseif ( $number == 0 )
-		$output = ( false === $zero ) ? __('No Comments') : $zero;
-	else // must be one
+	elseif ( $number == 0 ){
+		//$output = ( false === $zero ) ? __('No Comments') : $zero;
+		$output = ( false === $zero ) ? "" : $zero;
+    }else // must be one
 		$output = ( false === $one ) ? __('1 Comment') : $one;
 
 	echo apply_filters('comments_number', $output, $number);

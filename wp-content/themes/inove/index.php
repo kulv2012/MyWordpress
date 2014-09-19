@@ -23,7 +23,8 @@
 			<span class="date"><?php the_time(__('F jS, Y', 'inove')) ?></span>
 			<?php if ($options['author']) : ?><span class="author"><?php the_author_posts_link(); ?></span><?php endif; ?>
 			<?php edit_post_link(__('Edit', 'inove'), '<span class="editpost">', '</span>'); ?>
-			<span class="comments"><?php comments_popup_link(__('No comments', 'inove'), __('1 comment', 'inove'), __('% comments', 'inove'), '', __('Comments off', 'inove')); ?></span>
+			<!--<span class="comments"><?php comments_popup_link(__('No comments', 'inove'), __('1 comment', 'inove'), __('% comments', 'inove'), '', __('Comments off', 'inove')); ?></span>-->
+			<span class="comments"><?php comments_popup_link(__('评论', 'inove'), __('1 comment', 'inove'), __('% comments', 'inove'), '', __('Comments off', 'inove')); ?></span>
             <?php if(function_exists('the_views')) { echo '<span class="comments">'.the_views(NULL, false).'次阅读 &nbsp;  &nbsp;</span>'; } ?>
 			<div class="fixed"></div>
 		</div>

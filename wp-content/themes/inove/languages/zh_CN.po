@@ -120,7 +120,7 @@ msgstr "编辑"
 #: archive.php:50
 #: index.php:25
 msgid "No comments"
-msgstr "没有评论"
+msgstr "评论"
 
 #: archive.php:50
 #: index.php:25

@@ -2121,7 +2121,7 @@ msgstr "% 条评论"
 
 #: wp-includes/comment-template.php:582 wp-includes/comment-template.php:973
 msgid "No Comments"
-msgstr "没有评论"
+msgstr "v没有评论"
 
 #: wp-includes/comment-template.php:584 wp-includes/comment-template.php:974
 msgid "1 Comment"

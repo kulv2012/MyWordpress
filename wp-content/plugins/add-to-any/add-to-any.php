@@ -3,7 +3,7 @@
 Plugin Name: Share Buttons by AddToAny
 Plugin URI: http://www.addtoany.com/
 Description: Share buttons for your pages including AddToAny's universal sharing button, Facebook, Twitter, Google+, Pinterest, StumbleUpon and many more.  [<a href="options-general.php?page=add-to-any.php">Settings</a>]
-Version: 1.3.1
+Version: 1.3.5
 Author: AddToAny
 Author URI: http://www.addtoany.com/
 */
@@ -190,7 +190,7 @@ function ADDTOANY_SHARE_SAVE_ICONS( $args = array() ) {
 		'html_container_close' => '',
 		'html_wrap_open'       => '',
 		'html_wrap_close'      => '',
-		'no_universal_button' => false,
+		'no_universal_button'  => false,
 	);
 	
 	$args = wp_parse_args( $args, $defaults );
@@ -344,13 +344,15 @@ function ADDTOANY_SHARE_SAVE_BUTTON( $args = array() ) {
 	
 		if ( ! isset( $options['button'] ) || 'A2A_SVG_32' == $options['button'] || isset( $no_small_icons ) && true == $no_small_icons ) {
 			// Skip button IMG for A2A icon insertion
-			$button_text = '';
+			$button_text    = '';
 		} else if ( isset( $options['button'] ) && 'CUSTOM' == $options['button'] ) {
 			$button_src		= $options['button_custom'];
 			$button_width	= '';
 			$button_height	= '';
 		} else if ( isset( $options['button'] ) && 'TEXT' == $options['button'] ) {
 			$button_text	= stripslashes( $options[ 'button_text'] );
+			// Do not display universal icon (when large icons are used)
+			$button_class  .= ' addtoany_no_icon';
 		} else {
 			$button_attrs	= explode( '|', $options['button'] );
 			$button_fname	= $button_attrs[0];
@@ -364,8 +366,11 @@ function ADDTOANY_SHARE_SAVE_BUTTON( $args = array() ) {
 		
 		if ( isset( $button_fname ) && ( $button_fname == 'favicon.png' || $button_fname == 'share_16_16.png' ) ) {
 			if ( ! $is_feed ) {
-				$style_bg	= 'background:url(' . $A2A_SHARE_SAVE_plugin_url_path . '/' . $button_fname . ') no-repeat scroll 4px 0px !important;';
+				$style_bg	= 'background:url(' . $A2A_SHARE_SAVE_plugin_url_path . '/' . $button_fname . ') no-repeat scroll 4px 0px;';
 				$style		= ' style="' . $style_bg . 'padding:0 0 0 25px;display:inline-block;height:16px;vertical-align:middle"'; // padding-left:21+4 (4=other icons padding)
+				
+				// Wrap in <span> to avoid showing the core-AddToAny Kit icon in addition to plugin's icon
+				$button_text = ( isset( $button_text ) ) ? '<span>' . $button_text . '</span>' : '<span></span>';
 			}
 		}
 		
@@ -385,8 +390,12 @@ function ADDTOANY_SHARE_SAVE_BUTTON( $args = array() ) {
 		$button_html = '';
 	}
 	
-	// If not a feed
-	if ( ! $is_feed ) {
+	// Hook to disable script output
+	// Example: add_filter( 'addtoany_script_disabled', '__return_true' );
+	$script_disabled = apply_filters( 'addtoany_script_disabled', false );
+	
+	// If not a feed, not admin, and script is not disabled
+	if ( ! $is_feed && ! is_admin() && ! $script_disabled ) {
 		if ($use_current_page) {
 			$button_config = "\n{title:document.title,"
 				. "url:location.href}";
@@ -597,7 +606,11 @@ function ADDTOANY_SHARE_SAVE_FLOATING( $args = array() ) {
 
 
 function A2A_SHARE_SAVE_head_script() {
-	if ( is_admin() || is_feed() )
+	// Hook to disable script output
+	// Example: add_filter( 'addtoany_script_disabled', '__return_true' );
+	$script_disabled = apply_filters( 'addtoany_script_disabled', false );
+	
+	if ( is_admin() || is_feed() || $script_disabled )
 		return;
 		
 	$options = get_option( 'addtoany_options' );
@@ -673,7 +686,11 @@ add_action( 'wp_head', 'A2A_SHARE_SAVE_head_script' );
 function A2A_SHARE_SAVE_footer_script() {
 	global $_addtoany_targets;
 	
-	if ( is_admin() || is_feed() )
+	// Hook to disable script output
+	// Example: add_filter( 'addtoany_script_disabled', '__return_true' );
+	$script_disabled = apply_filters( 'addtoany_script_disabled', false );
+	
+	if ( is_admin() || is_feed() || $script_disabled )
 		return;
 		
 	$_addtoany_targets = ( isset( $_addtoany_targets ) ) ? $_addtoany_targets : array();
@@ -872,7 +889,7 @@ function A2A_SHARE_SAVE_stylesheet() {
 	// Use stylesheet?
 	if ( ! isset( $options['inline_css'] ) || $options['inline_css'] != '-1' && ! is_admin() ) {
 	
-		wp_enqueue_style( 'A2A_SHARE_SAVE', $A2A_SHARE_SAVE_plugin_url_path . '/addtoany.min.css', false, '1.6' );
+		wp_enqueue_style( 'A2A_SHARE_SAVE', $A2A_SHARE_SAVE_plugin_url_path . '/addtoany.min.css', false, '1.7' );
 	
 		// wp_add_inline_style requires WP 3.3+
 		if ( '3.3' <= get_bloginfo( 'version' ) ) {

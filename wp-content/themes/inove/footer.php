@@ -19,7 +19,7 @@
 	<div id="copyright">
 		<?php
 			global $wpdb;
-			$post_datetimes = $wpdb->get_row($wpdb->prepare("SELECT YEAR(min(post_date_gmt)) AS firstyear, YEAR(max(post_date_gmt)) AS lastyear FROM $wpdb->posts WHERE post_date_gmt > 1970"));
+			$post_datetimes = $wpdb->get_row($wpdb->prepare("SELECT YEAR(min(post_date_gmt)) AS firstyear, YEAR(max(post_date_gmt)) AS lastyear FROM $wpdb->posts WHERE post_date_gmt > 1970", array()) );
 			if ($post_datetimes) {
 				$firstpost_year = $post_datetimes->firstyear;
 				$lastpost_year = $post_datetimes->lastyear;

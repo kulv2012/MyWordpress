@@ -144,7 +144,7 @@ class SyntaxHighlighter {
 		wp_register_script( 'syntaxhighlighter-brush-matlabkey',  plugins_url( 'third-party-brushes/shBrushMatlabKey.js',         __FILE__ ), array('syntaxhighlighter-core'), '20091209'     );
 		wp_register_script( 'syntaxhighlighter-brush-objc',       plugins_url( 'third-party-brushes/shBrushObjC.js',              __FILE__ ), array('syntaxhighlighter-core'), '20091207'     );
 		wp_register_script( 'syntaxhighlighter-brush-r',          plugins_url( 'third-party-brushes/shBrushR.js',                 __FILE__ ), array('syntaxhighlighter-core'), '20100919'     );
-		wp_register_script( 'syntaxhighlighter-brush-golang',          plugins_url( 'third-party-brushes/shBrushGoLang.js',                 __FILE__ ), array('syntaxhighlighter-core'), '20100919'     );
+		wp_register_script( 'syntaxhighlighter-brush-go',          plugins_url( 'third-party-brushes/shBrushGoLang.js',                 __FILE__ ), array('syntaxhighlighter-core'), '20100919'     );
 
 		// Register theme stylesheets
 		wp_register_style(  'syntaxhighlighter-core',             plugins_url( $this->shfolder . '/styles/shCore.css',            __FILE__ ), array(),                         $this->agshver );
@@ -204,7 +204,7 @@ class SyntaxHighlighter {
 			'py'            => 'python',
 			'python'        => 'python',
 			'r'             => 'r', // Not used as a shortcode
-			'golang'         => 'golang',
+			'go'         => 'go',
 			'splus'         => 'r',
 			'rails'         => 'ruby',
 			'rb'            => 'ruby',

@@ -41,7 +41,7 @@
     };
  
     Brush.prototype = new SyntaxHighlighter.Highlighter();
-    Brush.aliases   = ['golang'];
+    Brush.aliases   = ['go'];
  
     SyntaxHighlighter.brushes.Golang = Brush;
  

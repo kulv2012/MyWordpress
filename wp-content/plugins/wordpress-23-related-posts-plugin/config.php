@@ -5,6 +5,9 @@ define("WP_RP_ZEMANTA_SUBSCRIPTION_URL", "http://prefs.zemanta.com/api/");
 define('WP_RP_STATIC_THEMES_PATH', 'static/themes/');
 define('WP_RP_STATIC_JSON_PATH', 'json/');
 define('WP_RP_CONTENT_BASE_URL', 'https://wprp.zemanta.com/static/');
+define("WP_RP_ZEMANTA_UPLOAD_URL", "http://prefs.zemanta.com/api/upload-articles/");
+define("WP_RP_ZEMANTA_ARTICLE_COUNT_URL", "http://prefs.zemanta.com/api/article-count/");
+
 
 define("WP_RP_DEFAULT_CUSTOM_CSS",
 ".related_post_title {
@@ -113,7 +116,7 @@ function wp_rp_set_global_notice() {
 	$wp_rp_meta = get_option('wp_rp_meta');
 	$wp_rp_meta['global_notice'] = array(
 		'title' => 'I\'ve installed Wordpress Related Posts plugin. Now what?',
-		'message' => 'Checkout how you can <a target="_blank" href="http://zem.si/1kGo9V6">create awesome content</a>. Hint: it\'s not all about YOU ;-)'
+		'message' => 'Checkout how you can create awesome content. Hint: it\'s not all about YOU ;-)'
 	);
 	update_option('wp_rp_meta', $wp_rp_meta);
 }
@@ -121,11 +124,20 @@ function wp_rp_set_global_notice() {
 
 function wp_rp_activate_hook() {
 	wp_rp_get_options();
-	wp_rp_schedule_notifications_cron();
+
+    // setup mixpanel
+    global $wprp_mp;
+    $wprp_mp->create_profile(array(), "wprp");
+    $wprp_mp->update_profile_property("wprp_activated", true);
+    $wprp_mp->track("wprp_activated");
 }
 
 function wp_rp_deactivate_hook() {
-	wp_rp_unschedule_notifications_cron();
+    // setup mixpanel
+    global $wprp_mp;
+    $wprp_mp->create_profile(array(), "wprp");
+    $wprp_mp->update_profile_property("wprp_activated", false);
+    $wprp_mp->track("wprp_activated");
 }
 
 function wp_rp_upgrade() {
@@ -176,8 +188,8 @@ function wp_rp_related_posts_db_table_install() {
 	  post_date datetime NOT NULL,
 	  label VARCHAR(" . WP_RP_MAX_LABEL_LENGTH . ") NOT NULL,
 	  weight float,
-	  INDEX post_id (post_id),
-	  INDEX label (label)
+	  KEY post_id (post_id),
+	  KEY label (label)
 	 );";
 
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -231,6 +243,7 @@ function wp_rp_install() {
 			'display_publish_date'			=> false,
 			'display_thumbnail'			=> true,
 			'display_excerpt'			=> false,
+			'display_category'			=> false,
 			'excerpt_max_length'			=> 200,
 			'theme_name' 				=> 'vertical-m.css',
 			'theme_custom_css'			=> WP_RP_DEFAULT_CUSTOM_CSS,
@@ -252,11 +265,72 @@ function wp_rp_is_classic() {
 	return false;
 }
 
+function wp_rp_migrate_3_6_3() {
+	$meta = get_option('wp_rp_meta');
+	$meta['version'] = '3.6.4';
+	$meta['new_user'] = false;
+	update_option('wp_rp_meta', $meta);
+}
+
+function wp_rp_migrate_3_6_2() {
+	$meta = get_option('wp_rp_meta');
+	$meta['version'] = '3.6.3';
+	$meta['new_user'] = false;
+	update_option('wp_rp_meta', $meta);
+}
+
+function wp_rp_migrate_3_6_1() {
+	$meta = get_option('wp_rp_meta');
+	$meta['version'] = '3.6.2';
+	$meta['new_user'] = false;
+	update_option('wp_rp_meta', $meta);
+}
+
+function wp_rp_migrate_3_6() {
+	$meta = get_option('wp_rp_meta');
+	$meta['version'] = '3.6.1';
+	$meta['new_user'] = false;
+	update_option('wp_rp_meta', $meta);
+}
+
+
+function wp_rp_migrate_3_5_4() {
+	$meta = get_option('wp_rp_meta');
+	$meta['version'] = '3.6';
+	$meta['new_user'] = false;
+	update_option('wp_rp_meta', $meta);
+
+	$options = get_option('wp_rp_options');
+	$options['desktop']['display_category'] = false;
+	update_option('wp_rp_options', $options);
+}
+
+function wp_rp_migrate_3_5_3() {
+	$meta = get_option('wp_rp_meta');
+	$meta['version'] = '3.5.4';
+	$meta['new_user'] = false;
+	update_option('wp_rp_meta', $meta);
+}
+
+function wp_rp_migrate_3_5_2() {
+	$meta = get_option('wp_rp_meta');
+	$meta['version'] = '3.5.3';
+	$meta['new_user'] = false;
+	update_option('wp_rp_meta', $meta);
+}
+
+function wp_rp_migrate_3_5_1() {
+	$meta = get_option('wp_rp_meta');
+	$meta['version'] = '3.5.2';
+	$meta['new_user'] = false;
+	update_option('wp_rp_meta', $meta);
+}
+
 function wp_rp_migrate_3_5() {
 	$meta = get_option('wp_rp_meta');
 	$meta['version'] = '3.5.1';
 	$meta['new_user'] = false;
-	update_option('wp_rp_meta', $meta);	
+	update_option('wp_rp_meta', $meta);
 }
 
 function wp_rp_migrate_3_4_3() {
@@ -274,7 +348,7 @@ function wp_rp_migrate_3_4_3() {
 		}
 	}
 
-	
+
 	$meta['subscribed'] = false;
 	update_option('wp_rp_meta', $meta);
 

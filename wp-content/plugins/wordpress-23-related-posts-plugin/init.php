@@ -1,5 +1,5 @@
 <?php
-define('WP_RP_VERSION', '3.5.1');
+define('WP_RP_VERSION', '3.6.4');
 
 define('WP_RP_PLUGIN_FILE', plugin_basename(__FILE__));
 
@@ -15,13 +15,23 @@ include_once(dirname(__FILE__) . '/recommendations.php');
 include_once(dirname(__FILE__) . '/edit_related_posts.php');
 include_once(dirname(__FILE__) . '/compatibility.php');
 
-register_activation_hook(__FILE__, 'wp_rp_activate_hook');
-register_deactivation_hook(__FILE__, 'wp_rp_deactivate_hook');
+
+require_once(dirname( __FILE__ ) . "/analytics.php");
+require_once(dirname( __FILE__ ) . "/utils.php");
+
+if(!class_exists("Mixpanel")) {
+    require_once(dirname(__FILE__) . "/mixpanel/lib/Mixpanel.php");
+}
+
+// setup mixpanel globally for RP
+global $wprp_mp;
+$wprp_mp = new wprp_analytics("ef0f7a11e41c9b6da92490c75b45e141");
+
+register_activation_hook(dirname(__FILE__) . "/wp_related_posts.php", 'wp_rp_activate_hook');
+register_deactivation_hook(dirname(__FILE__) . "/wp_related_posts.php", 'wp_rp_deactivate_hook');
 
 add_action('wp_head', 'wp_rp_head_resources');
-
 add_action('plugins_loaded', 'wp_rp_init_zemanta');
-
 
 function wp_rp_init_zemanta() {
 	include_once(dirname(__FILE__) . '/zemanta/zemanta.php');
@@ -39,13 +49,13 @@ function wp_rp_admin_style() {
 	wp_enqueue_style('wp_rp_admin_style', plugins_url('static/css/dashboard.css', __FILE__));
 }
 add_action( 'admin_enqueue_scripts', 'wp_rp_admin_style');
-  
+
 function wp_rp_global_notice() {
 	global $pagenow, $wp_rp_global_notice_pages;
 	if (!current_user_can('delete_users')) {
 		return;
 	}
-	
+
 	$meta = wp_rp_get_meta();
 	$close_url = add_query_arg( array(
 		'page' => 'wordpress-related-posts',
@@ -57,7 +67,7 @@ function wp_rp_global_notice() {
 	}
 }
 add_action('all_admin_notices', 'wp_rp_global_notice' );
-  
+
 function wp_rp_extend_adminbar() {
 	global $wp_admin_bar;
 
@@ -75,6 +85,10 @@ global $wp_rp_output;
 $wp_rp_output = array();
 function wp_rp_add_related_posts_hook($content) {
 	global $wp_rp_output, $post;
+
+	if( !is_object($post) ) {
+		return $content;
+	}
 
 	$options = wp_rp_get_options();
 
@@ -117,6 +131,8 @@ function wp_rp_get_platform_options() {
 
 function wp_rp_ajax_load_articles_callback() {
 	global $post;
+
+	$platform_options = wp_rp_get_platform_options();
 
 	$getdata = stripslashes_deep($_GET);
 	if (!isset($getdata['post_id'])) {
@@ -161,11 +177,23 @@ function wp_rp_ajax_load_articles_callback() {
 	$response_list = array();
 
 	foreach (array_slice($related_posts, $from) as $related_post) {
+		$excerpt_max_length = $platform_options["excerpt_max_length"];
+
+		$excerpt = $related_post->post_excerpt;
+		if (!$excerpt) {
+			$excerpt = strip_shortcodes(strip_tags($related_post->post_content));
+		}
+		if ($excerpt) {
+			if (strlen($excerpt) > $excerpt_max_length) {
+				$excerpt = wp_rp_text_shorten($excerpt, $excerpt_max_length);
+			}
+		}
+
 		array_push($response_list, array(
 				'id' => $related_post->ID,
 				'url' => get_permalink($related_post->ID),
 				'title' => $related_post->post_title,
-				'excerpt' => $related_post->post_excerpt,
+				'excerpt' => $excerpt,
 				'date' => $related_post->post_date,
 				'comments' => $related_post->comment_count,
 				'img' => wp_rp_get_post_thumbnail_img($related_post, $image_size)
@@ -263,8 +291,8 @@ function wp_rp_text_shorten($text, $max_chars) {
 	}
 	return $shortened_text . WP_RP_EXCERPT_SHORTENED_SYMBOL; //'...';
 }
-  
-function wp_rp_generate_related_posts_list_items($related_posts, $selected_related_posts) {
+
+function wp_rp_generate_related_posts_list_items($related_posts, $selected_related_posts, $post_categories) {
 	$options = wp_rp_get_options();
 	$platform_options = wp_rp_get_platform_options();
 	$output = "";
@@ -344,6 +372,21 @@ function wp_rp_generate_related_posts_list_items($related_posts, $selected_relat
 				$output .= ' <small class="wp_rp_excerpt">' . $excerpt . '</small>';
 			}
 		}
+		if ($platform_options["display_category"] && !empty($post_categories)){
+			$output .= ' <small class="wp_rp_category">Posted in ';
+			$num_categories = 0;
+			$id = $related_post->ID;
+			if (strpos($id, "in_") !== false) { $id = substr($id, 3); }
+			foreach($post_categories[$id] as $cat_id => $cat_name) {
+				$cat_url = esc_url(get_category_link($cat_id));
+				if ($num_categories > 0) {
+					$output .= ', ';
+				}
+				$output .= '<a href="' . $cat_url . '" target="_parent">' . $cat_name . '</a>';
+				$num_categories++;
+			}
+			$output .= '</small>';
+		}
 		$output .=  '</li>';
 	}
 
@@ -412,11 +455,9 @@ function wp_rp_head_resources() {
 
 	$output .= "<script type=\"text/javascript\">\n" . $output_vars . "</script>\n";
 
-	$output .= '<script type="text/javascript" src="' . WP_RP_STATIC_BASE_URL . WP_RP_STATIC_LOADER_FILE . '?version=' . WP_RP_VERSION . '" async></script>' . "\n";
-
 	$static_url = plugins_url('static/', __FILE__);
 	$theme_url = plugins_url(WP_RP_STATIC_THEMES_PATH, __FILE__);
-	
+
 	if ($options['enable_themes']) {
 		if ($platform_options['theme_name'] !== 'plain.css' && $platform_options['theme_name'] !== 'm-plain.css') {
 			$output .= '<link rel="stylesheet" href="' . $theme_url . $platform_options['theme_name'] . '?version=' . WP_RP_VERSION . '" />' . "\n";
@@ -488,18 +529,23 @@ function wp_rp_get_related_posts($before_title = '', $after_title = '') {
 		return;
 	}
 
+	$post_categories = array();
+	if ($platform_options["display_category"]){
+		$post_categories = wp_rp_get_post_categories();
+	}
+
 	$posts_footer = '';
 	if (current_user_can($options['only_admins_can_edit_related_posts'] ? 'manage_options' : 'edit_posts')) {
 		$posts_footer .= '<div class="wp_rp_footer"><a class="wp_rp_edit" href="#" id="wp_rp_edit_related_posts">Edit Related Posts</a></div>';
 	}
 	if ($options['display_zemanta_linky']) {
-		$posts_footer .= '<div class="wp_rp_footer"><a class="wp_rp_backlink" target="_blank" href="http://www.zemanta.com/?wp-related-posts" rel="nofollow">Zemanta</a></div>';
+		$posts_footer .= '<div class="wp_rp_footer"><a class="wp_rp_backlink" target="_blank" href="http://www.sovrn.com/" rel="nofollow">Sovrn</a></div>';
 	}
 
 	$css_classes = 'related_post wp_rp';
 	$css_classes_wrap = ' ' . str_replace(array('.css', '-'), array('', '_'), esc_attr('wp_rp_' . $platform_options['theme_name']));
 
-	$related_posts_lis = wp_rp_generate_related_posts_list_items($related_posts, $selected_related_posts);
+	$related_posts_lis = wp_rp_generate_related_posts_list_items($related_posts, $selected_related_posts, $post_categories);
 	$related_posts_ul = '<ul class="' . $css_classes . '">' . $related_posts_lis . '</ul>';
 
 	$related_posts_title = $title ? ($before_title ? $before_title . $title . $after_title : '<h3 class="related_post_title">' . $title . '</h3>') : '';
@@ -509,13 +555,13 @@ function wp_rp_get_related_posts($before_title = '', $after_title = '') {
 		$wp_rp_is_first_widget = false;
 		$first_id_attr = 'id="wp_rp_first"';
 	}
-	
+
 	$wrap_style = '';
 	//error_log('test group when content:'  . $wp_rp_test_group);
 	if ($wp_rp_test_group == 2) {
 		$wrap_style = ' style="display:none;"';
 	}
-	
+
 	$output = '<div class="wp_rp_wrap ' . $css_classes_wrap . '" ' . $first_id_attr . $wrap_style . '>' .
 			'<div class="wp_rp_content">' .
 				$related_posts_title .

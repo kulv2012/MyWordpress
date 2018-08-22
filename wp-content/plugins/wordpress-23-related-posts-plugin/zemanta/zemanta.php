@@ -26,20 +26,18 @@ class WPRPZemanta {
 			return;
 		}
 		global $wp_version;
-		
+
 		// initialize update notes shown once on plugin update
 		$this->update_notes['1.0.5'] = __('Please double-check your upload paths in Zemanta Settings, we changed some things that might affect your images.', 'zemanta');
 		$this->update_notes['1.0.7'] = __('Please double-check your upload paths in Zemanta Settings, we changed some things that might affect your images.', 'zemanta');
 		$this->update_notes['1.0.8'] = __('Please double-check your upload paths in Zemanta Settings, we changed some things that might affect your images.', 'zemanta');
-		
+
 		add_action('admin_init', array($this, 'init'));
 		add_action('admin_init', array($this, 'register_options'));
 
-		register_activation_hook(dirname(__FILE__) . '/zemanta.php', array($this, 'activate'));
-		
 		$this->supported_features['featured_image'] = version_compare($wp_version, '3.1', '>=') >= 0;
 	}
-	
+
 	/**
 	* admin_init
 	*
@@ -52,13 +50,16 @@ class WPRPZemanta {
 		add_action('edit_form_advanced', array($this, 'assets'), 1);
 		add_action('edit_page_form', array($this, 'assets'), 1);
 		add_action('save_post', array($this, 'save_post'), 20);
-		
+
 		$this->check_plugin_updated();
 		$this->create_options();
 		$this->check_options();
-		
+
 		if(!$this->check_dependencies())
 			add_action('admin_notices', array($this, 'warning'));
+
+        global $wprp_mp;
+        $wprp_mp->active_install("wprp");
 	}
 
 	/**
@@ -66,7 +67,7 @@ class WPRPZemanta {
 	*
 	* Run any functions needed for plugin activation
 	*/
-	public function activate() 
+	public function activate()
 	{
 		$this->fix_user_meta();
 	}
@@ -76,8 +77,8 @@ class WPRPZemanta {
 	*
 	* Add any assets to the edit page
 	*/
-	public function assets() 
-	{	
+	public function assets()
+	{
 		$this->render('assets', array(
 			'api_key' => $this->api_key,
 			'version' => $this->version,
@@ -118,13 +119,13 @@ class WPRPZemanta {
 	*
 	* Add configuration page to menu
 	*/
-	public function add_options() 
+	public function add_options()
 	{
 		$this->top_menu_slug = add_menu_page(
-			__('Zemanta', 'zemanta'), 
-			__('Zemanta', 'zemanta'), 
-			'manage_options', 'zemanta', 
-			array($this, 'options'), 
+			__('Zemanta', 'zemanta'),
+			__('Zemanta', 'zemanta'),
+			'manage_options', 'zemanta',
+			array($this, 'options'),
 			plugins_url('/img/menu_icon.png', __FILE__)
 		);
 	}
@@ -138,7 +139,7 @@ class WPRPZemanta {
 	{
 		$this->api_key = $this->get_api_key();
 
-		if (!$this->api_key) 
+		if (!$this->api_key)
 		{
 			$options = get_option('zemanta_options');
 
@@ -148,14 +149,14 @@ class WPRPZemanta {
 			}
 
 			$this->api_key = $this->get_api_key();
-			if (!$this->api_key) 
+			if (!$this->api_key)
 			{
 				$this->api_key = $this->fetch_api_key();
-				if ($this->api_key) 
+				if ($this->api_key)
 				{
 					$this->set_api_key($this->api_key);
-				} 
-				else 
+				}
+				else
 				{
 					add_action('admin_notices', array($this, 'warning_no_api_key'));
 				}
@@ -185,7 +186,7 @@ class WPRPZemanta {
 				//,'description' => __('Using Zemanta image uploader in this way may download copyrighted images to your blog. Make sure you and your blog writers check and understand licenses of each and every image before using them in your blog posts and delete them if they infringe on author\'s rights.')
 				)
 		);
-		
+
 		$this->options = apply_filters('zemanta_options', $options);
 	}
 
@@ -250,9 +251,9 @@ class WPRPZemanta {
 	*
 	* Add configuration page
 	*/
-	public function options() 
+	public function options()
 	{
-		if(!$this->api_key) 
+		if(!$this->api_key)
 		{
 			$this->api_key = $this->fetch_api_key();
 			$this->set_option('api_key', $this->api_key);
@@ -265,7 +266,7 @@ class WPRPZemanta {
 
 	/**
 	* sideload_image
-	* 
+	*
 	* New image uploader, this is slightly modified version of media_sideload_image from wp-admin/includes/media.php
 	*
 	* @param string $file the URL of the image to download
@@ -303,7 +304,7 @@ class WPRPZemanta {
 	* is_uploader_enabled
 	*
 	*/
-	public function is_uploader_enabled() 
+	public function is_uploader_enabled()
 	{
 		return $this->get_option('image_uploader');
 	}
@@ -318,11 +319,11 @@ class WPRPZemanta {
 		// do not process revisions, autosaves and auto-drafts
 		if(wp_is_post_revision($post_id) || wp_is_post_autosave($post_id) || get_post_status($post_id) == 'auto-draft' || isset($_POST['autosave']))
 			return;
-		
+
 		// do not process if uploader disabled
 		if(!$this->is_uploader_enabled())
 			return;
-		
+
 		$content = stripslashes($_POST['post_content']);
 		$nlcontent = str_replace("\n", '', $content);
 		$urls = array();
@@ -334,9 +335,9 @@ class WPRPZemanta {
 		// @deprecated
 		if(preg_match_all('/<div[^>]+zemanta-img[^>]+>.+?<\/div>/', $nlcontent, $matches))
 		{
-			foreach($matches[0] as $str) 
+			foreach($matches[0] as $str)
 			{
-				if(preg_match('/src="([^"]+)"/', $str, $srcurl)) 
+				if(preg_match('/src="([^"]+)"/', $str, $srcurl))
 				{
 					if(preg_match('/href="([^"]+)"/', $str, $desc))
 						$descs[] = $desc[1];
@@ -350,13 +351,13 @@ class WPRPZemanta {
 
 		// this code looks for all images in the post
 		// extracts alt and src attributes for image downloader
-		if(preg_match_all('/<img .*?src="[^"]+".*?>/', $nlcontent, $matches)) 
+		if(preg_match_all('/<img .*?src="[^"]+".*?>/', $nlcontent, $matches))
 		{
-			foreach($matches[0] as $str) 
+			foreach($matches[0] as $str)
 			{
 				if(preg_match('/src="([^"]+)"/', $str, $srcurl))
 				{
-					if(!in_array($srcurl[1], $urls)) 
+					if(!in_array($srcurl[1], $urls))
 					{
 						if(preg_match('/alt="([^"]+)"/', $str, $desc))
 							$descs[] = strlen($desc[1]) ? $desc[1] : $srcurl[1];
@@ -368,21 +369,21 @@ class WPRPZemanta {
 				}
 			}
 		}
-		
+
 		// do not do anything if there no images found in the post
 		if(empty($urls))
 			return;
-		
+
 		// download images to blog and replace external URLs with local
 		for($i = 0, $c = sizeof($urls); $i < $c; $i++)
 		{
 			$url = $urls[$i];
 			$desc = $descs[$i];
-			
+
 			// skip images from img.zemanta.com and FMP
 			if(strpos($url, 'http://img.zemanta.com/') !== false || preg_match('#https?://.+\.fmpub\.net/#i', $url))
 				continue;
-			
+
 			// skip if already hosted on our blog
 			if(strpos($url, get_bloginfo('url')) !== false) {
 				continue;
@@ -392,19 +393,19 @@ class WPRPZemanta {
 			if(!is_wp_error($localurl) && !empty($localurl))
 				$content = str_replace($url, $localurl, $content);
 		}
-		
+
 		// unhook this function so it doesn't loop infinitely
 		remove_action('save_post', array($this, 'save_post'), 20);
-		
+
 		// put modified content back to _POST so other plugins can reuse it
 		$_POST['post_content'] = addslashes($content);
-		
+
 		// update post in database
 		wp_update_post(array(
-			'ID' => $post_id, 
+			'ID' => $post_id,
 			'post_content' => $content)
 		);
-		
+
 		// re-hook this function
 		add_action('save_post', array($this, 'save_post'), 20);
 	}
@@ -421,18 +422,18 @@ class WPRPZemanta {
 		$arguments = array_merge($arguments, array(
 			'api_key'=> $this->api_key
 			));
-		
+
 		if (!isset($arguments['format']))
 		{
 			$arguments['format'] = 'xml';
 		}
-		
+
 		return wp_remote_post($this->api_url, array('method' => 'POST', 'body' => $arguments));
 	}
-	
+
 	/**
 	* ajax_error
-	* 
+	*
 	* Helper function to throw WP_Errors to ajax as json
 	*/
 	public function ajax_error($wp_error) {
@@ -446,7 +447,7 @@ class WPRPZemanta {
 			)));
 		}
 	}
-	
+
 	/**
 	* ajax_zemanta_set_featured_image
 	*
@@ -456,16 +457,16 @@ class WPRPZemanta {
 	public function ajax_zemanta_set_featured_image()
 	{
 		global $post_ID;
-		
+
 		if(!isset($this->supported_features['featured_image'])) {
 			$this->ajax_error(new WP_Error(4, __('Featured image feature is not supported on current platform.', 'zemanta')));
 		}
-		
+
 		$args = wp_parse_args($_REQUEST, array('post_id' => 0, 'image_url' => ''));
 		extract($args);
-		
+
 		$post_id = (int)$post_id;
-		
+
 		if(!empty($image_url) && $post_id)
 		{
 			$http_response = wp_remote_get($image_url, array('timeout' => 10));
@@ -473,15 +474,15 @@ class WPRPZemanta {
 			if(!is_wp_error($http_response))
 			{
 				$data = wp_remote_retrieve_body($http_response);
-				
+
 				// throw error if there no data
 				if(empty($data)) {
 					$this->ajax_error(new WP_Error(5, __('Featured image has invalid data.', 'zemanta')));
 				}
-				
+
 				$upload = wp_upload_bits(basename($image_url), null, $data);
 
-				if(!is_wp_error($upload) && !$upload['error']) 
+				if(!is_wp_error($upload) && !$upload['error'])
 				{
 					$filename = $upload['file'];
 					$wp_filetype = wp_check_filetype(basename($filename), null );
@@ -494,10 +495,10 @@ class WPRPZemanta {
 					$attach_id = wp_insert_attachment($attachment, $filename, $post_id);
 					$attach_data = wp_generate_attachment_metadata($attach_id, $filename);
 					wp_update_attachment_metadata($attach_id, $attach_data);
-					
+
 					// this is necessary, or _wp_post_thumbnail_html returns broken remove link
 					$post_ID = $post_id;
-					
+
 					// set_post_thumbnail available only since WordPress 3.1
 					if(set_post_thumbnail($post_id, $attach_id)) {
 						die(json_encode(array(
@@ -516,7 +517,7 @@ class WPRPZemanta {
 				$this->ajax_error(new WP_Error(3, sprintf(__('An error occurred while image download: %s', 'zemanta'), $http_response->get_error_message())));
 			}
 		}
-		
+
 		die(0);
 	}
 
@@ -525,7 +526,7 @@ class WPRPZemanta {
 	*
 	* Get API Key
 	*/
-	public function fetch_api_key() 
+	public function fetch_api_key()
 	{
 		$response = $this->api(array(
 			'method' => 'zemanta.auth.create_user',
@@ -549,7 +550,7 @@ class WPRPZemanta {
 	*
 	* Adds Shim to Edit Page for Zemanta Plugin
 	*/
-	public function shim() 
+	public function shim()
 	{
 		echo '<div id="zemanta-sidebar"></div>';
 	}
@@ -603,7 +604,7 @@ class WPRPZemanta {
 	* @param string $name Name of option to set
 	* @param string $value Value of option
 	*/
-	protected function set_option($name, $value) 
+	protected function set_option($name, $value)
 	{
 		$options = get_option('zemanta_options');
 
@@ -623,7 +624,7 @@ class WPRPZemanta {
 	* get_api_key
 	*
 	* Get API Key
-	*/ 
+	*/
 	public function get_api_key()
 	{
 		return $this->get_option('api_key');
@@ -635,8 +636,8 @@ class WPRPZemanta {
 	* Get API Key
 	*
 	* @param string $api_key API Key to set
-	*/ 
-	protected function set_api_key($api_key) 
+	*/
+	protected function set_api_key($api_key)
 	{
 		$this->set_option('api_key', $api_key);
 	}
@@ -648,7 +649,7 @@ class WPRPZemanta {
 	*
 	* @return boolean
 	*/
-	protected function check_dependencies() 
+	protected function check_dependencies()
 	{
 		return ((function_exists('curl_init') || ini_get('allow_url_fopen')) && (function_exists('preg_match') || function_exists('ereg')));
 	}
@@ -686,8 +687,8 @@ class WPRPZemanta {
 	* @param array $arguments Arguments to pass to file
 	* @param boolean $return Whether or not to return the output or print it
 	*/
-	protected function render($view, $arguments = array(), $return = false) 
-	{		
+	protected function render($view, $arguments = array(), $return = false)
+	{
 		$view_file = untrailingslashit(dirname(__FILE__)) . '/views/' . $view . '.php';
 
 		extract($arguments, EXTR_SKIP);

@@ -1,5 +1,7 @@
 <?php
 
+include_once(dirname(__FILE__) . '/uploader.php');
+
 /**
 * Place menu icons at admin head
 **/
@@ -211,10 +213,18 @@ function wp_rp_settings_page() {
 	}
 
 	wp_rp_register();
-	
+
 	$options = wp_rp_get_options();
 	$meta = wp_rp_get_meta();
-
+	
+	
+	$articles_count = wp_rp_article_count($meta['zemanta_api_key']);
+	$articles_uploaded = false;
+	if (isset( $_GET['wp_rp_upload_articles'] ) && !empty($meta['zemanta_api_key'])) {
+		$articles_uploaded = wp_rp_upload_articles($meta['zemanta_api_key']);
+	}
+	
+	
 	// Update already subscribed but in the old pipeline
 	if (!empty($meta["email"]) && empty($meta["subscribed"])) {
 		wp_rp_subscription($meta["email"], $options["subscription_types"]);
@@ -255,6 +265,7 @@ function wp_rp_settings_page() {
 				'display_comment_count' => isset($postdata['wp_rp_desktop_display_comment_count']),
 				'display_publish_date' => isset($postdata['wp_rp_desktop_display_publish_date']),
 				'display_excerpt' => isset($postdata['wp_rp_desktop_display_excerpt']),
+				'display_category' => isset($postdata['wp_rp_desktop_display_category']),
 				'display_thumbnail' => isset($postdata['wp_rp_desktop_display_thumbnail']),
 				'excerpt_max_length' => (isset($postdata['wp_rp_desktop_excerpt_max_length']) && is_numeric(trim($postdata['wp_rp_desktop_excerpt_max_length']))) ? intval(trim($postdata['wp_rp_desktop_excerpt_max_length'])) : 200,
 				'custom_theme_enabled' => isset($postdata['wp_rp_desktop_custom_theme_enabled']),

@@ -1,8 +1,4 @@
 <?php
-/*
- 用来检查沃唱吧中，每个手机号当前的状态跟联通那边的状态是否一致。
- 用时请清空wochangba_tmp临时表。
- */
 
 
 ini_set("display_errors", TRUE);
@@ -43,7 +39,7 @@ if( $urls != ""){
 
 ?>
 
-<h2> url 参数格式化, 支持多行</h2>
+<h2> url 参数格式化, 支持多行. json格式化用<a href='http://json.parser.online.fr'>json online</a></h2>
 <form action='/tools/urlargs_decode.php' method='GET'>
 <textarea name='urls' style="width:1000px;height:300px"><?=$urls?></textarea>
 

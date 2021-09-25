@@ -32,6 +32,7 @@
 
 				echo $copyright;
 				bloginfo('name');
+                echo "(<a href='https://beian.miit.gov.cn'>京ICP备2021027825号</a>)";
 			}
 		?>
 	</div>

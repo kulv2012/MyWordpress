@@ -10,4 +10,4 @@
 	<span class="new">&nbsp;<?php _e( 'New', 'wptouch-pro' ); ?></span>
 <?php } ?>
 
-<input type="text" autocomplete="off" class="numeric" id="<?php wptouch_admin_the_setting_name(); ?>" name="<?php wptouch_admin_the_encoded_setting_name(); ?>" value="<?php wptouch_admin_the_setting_value(); ?>" />
+<input type="text" autocomplete="off" class="numeric" id="<?php wptouch_admin_the_setting_name(); ?>" name="<?php wptouch_admin_the_encoded_setting_name(); ?>" value="<?php esc_attr( wptouch_admin_the_setting_value() ); ?>" />

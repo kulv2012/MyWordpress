@@ -9,31 +9,35 @@ global $wptouch_admin_menu_iterator;
 global $wptouch_admin_menu_item;
 
 function wptouch_get_remote_icon_packs() {
-	$result = wp_remote_get( 'http://wptouch-pro-3.s3.amazonaws.com/icon-sets/readme.txt' );
-	$remote_icon_packs = false;
+	$result = 'plex,Plex,Cornmanthe3rd,http://cornmanthe3rd.deviantart.com
+smallicons,Smallicons,Nick Frost and Greg Lapin,http://smallicons.net
+woofunction,WooFunction,Liam McKay,http://www.woothemes.com
+classic,Classic,Marcelo Marfil,http://mmarfil.com/
+addicted-flavor,Addicted Flavor,Oliver Twardowski,http://twitter.com/mywayhome
+devandroid,Dev Android Icons,androidicons.com,http://www.androidicons.com
+project,Project Icons,Mihaiciuc Bogdan,http://bogo-d.deviantart.com
+icandies,iCandies, IconEden,http://www.iconeden.com/icon/category/free
+gcons,Gcons,greepit.com,http://www.greepit.com/open-source-icons-gcons/
+iconic,Open Iconic,useiconic.com,http://useiconic.com/open/';
+	
+	$remote_icon_packs = array();
 
-	if ( $result && !is_wp_error( $result ) ) {
-		if ( $result[ 'response' ][ 'code' ] == 200 ) {
-			$remote_icon_packs = array();
+	$items = explode( "\n", $result);
+	foreach( $items as $item ) {
+		$icon_set = new stdClass;
 
-			$items = explode( "\n", $result[ 'body' ] );
-			foreach( $items as $item ) {
-				$icon_set = new stdClass;
+		$icon_set_info = explode( ",", $item );
 
-				$icon_set_info = explode( ",", $item );
+		$icon_set->download_url = plugin_dir_url( __DIR__ ) .'admin/images/icon-sets/' . $icon_set_info[0] . '.zip';
+		$icon_set->name = $icon_set_info[1];
+		$icon_set->dir_base = $icon_set_info[0];
+		$icon_set->author = $icon_set_info[2];
+		$icon_set->author_url = $icon_set_info[3];
+		$icon_set->thumbnail = plugin_dir_url( __DIR__ ).'admin/images/icon-sets/thumbnails/' . $icon_set_info[0] . '.png';
 
-				$icon_set->download_url = 'http://wptouch-pro-3.s3.amazonaws.com/icon-sets/' . $icon_set_info[0] . '.zip';
-				$icon_set->name = $icon_set_info[1];
-				$icon_set->dir_base = $icon_set_info[0];
-				$icon_set->author = $icon_set_info[2];
-				$icon_set->author_url = $icon_set_info[3];
-				$icon_set->thumbnail = wptouch_check_url_ssl( 'http://wptouch-pro-3.s3.amazonaws.com/icon-sets/thumbnails/' . $icon_set_info[0] . '.png' );
-
-				$remote_icon_packs[] = $icon_set;
-			}
-		}
+		$remote_icon_packs[] = $icon_set;
 	}
-
+	
 	return $remote_icon_packs;
 }
 

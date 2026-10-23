@@ -875,8 +875,8 @@ function wptouchTriggerSave( callback ) {
 
 			if ( typeof( callback ) !== 'undefined' ) {
 				callback();
-			return false;
-	};
+				return false;
+			}
 		},
 		cache: false
 	});
@@ -1064,4 +1064,5 @@ function wptouchAdminReady() {
 
 jQuery( document ).ready( function() {
 	wptouchAdminReady();
+	jQuery("a:contains('Upgrade to Pro')").parent('li').addClass('wptouch-submenu-highlight');
 });

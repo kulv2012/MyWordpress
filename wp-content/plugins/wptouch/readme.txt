@@ -1,12 +1,12 @@
-=== WPtouch ===
-Contributors: wptouch, sureswiftcapital, duanestorey, dalemugford, adamdipardo, oxymoron
-Tags: wptouch, iphone, ipod, bravenewcode, mobile, mobile-friendly, android, blackberry, smartphone, responsive, design, mobile plugin, ios, mobile theme
+=== WPtouch - Make your WordPress Website Mobile-Friendly ===
+Contributors: wptouch, sureswiftcapital, duanestorey, dalemugford, adamdipardo, oxymoron, oddjar
+Tags: mobile, mobile-friendly, responsive, iphone, android, mobile plugin, mobile theme, wptouch, ipad, smartphone, responsive theme, ios
 Requires at least: 4.2
-Stable tag: 4.3.28
-Tested up to: 4.9
+Stable tag: 4.3.62
+Tested up to: 6.9
 License: GPLv2
 
-Make your WordPress website mobile-friendly with just a few clicks.
+With just a few clicks, make your WordPress website mobile-friendly (iPhone, Android, and more). Recommended by Google, it will instantly enable a mobile-friendly version of your website.
 
 == Description ==
 
@@ -32,6 +32,146 @@ For more information visit [WPtouch.com](http://www.wptouch.com/?utm_campaign=wp
 6. Theme settings
 
 == Changelog ==
+
+= Version 4.3.62 (December 4th, 2025) =
+
+* Minor fixes.
+* WordPress 6.9 compatibility.
+
+= Version 4.3.61 (May 17th, 2025) =
+
+* Security fixes.
+* Minor fixes.
+* WordPress 6.8.1 compatibility.
+
+= Version 4.3.60 (November 13th, 2024) =
+
+* Minor fixes.
+* WordPress 6.7 compatibility.
+
+= Version 4.3.59 (May 13th, 2024) =
+
+* Minor fixes.
+* Added: Reddit social sharing.
+
+= Version 4.3.58 (April 19th, 2024) =
+
+* Bug fixes.
+
+= Version 4.3.57 (April 11th, 2024) =
+
+* Minor fixes; WordPress 6.5.2 compatibility
+
+= Version 4.3.55 (October 24th, 2023) =
+
+* Bug fixes.
+
+= Version 4.3.54 (September 28th, 2023) =
+
+* Minor fixes; WordPress 6.3.1 compatibility
+
+= Version 4.3.53 (May 23rd, 2023) =
+
+* PHP 8 compatibility
+
+= Version 4.3.52 (March 23rd, 2023) =
+
+* License display issue corrected.
+
+= Version 4.3.51 (March 13th, 2023) =
+
+* 3rd party plugin compatibility fixes.
+
+= Version 4.3.50 (February 15th, 2023) =
+
+* Jetpack media compatibility fixes.
+
+= Version 4.3.49 (February 6th, 2023) =
+
+* Bug fixes.
+
+= Version 4.3.48 (February 2nd, 2023) =
+
+* Bug fixes.
+
+= Version 4.3.47 (January 12th, 2023) =
+
+* Security tightening.
+
+= Version 4.3.46 (December 12th, 2022) =
+
+* Versioning.
+
+= Version 4.3.45 (December 12th, 2022) =
+
+* Security fixes.
+
+= Version 4.3.44 (August 25th, 2022) =
+
+* Minor security tightening. Versioning.
+
+= Version 4.3.42 (July 25th, 2022) =
+
+* Minor menu fix.
+
+= Version 4.3.41 (May 5th, 2021) =
+
+* Fixed subsequent icon jQuery error.
+
+= Version 4.3.40 (May 4th, 2021) =
+
+* Fixed menu icon jQuery error.
+
+= Version 4.3.39 (November 11th, 2020) =
+
+* Fixed more CSS issues that disrupted usability.
+
+= Version 4.3.38 (August 26th, 2020) =
+
+* Fixed CSS issues that disrupted usability.
+* Fixed redirect that would cause screen error after upgrade.
+
+* Added: SMS sharing option to base Foundation theme.
+
+= Version 4.3.37 (April 13th, 2019) =
+
+* Added: SMS sharing option to base Foundation theme.
+
+= Version 4.3.36 (March 26th, 2019) =
+
+* Added: kinsta.com check so they can optimize WPtouch plugin caching on their hosting platform.
+* Updated: Tested up to date.
+
+= Version 4.3.35 (February 11th, 2019) =
+
+* Fixed: Issue where links with sms protocols would get stripped from content.
+
+= Version 4.3.34 (November 21st, 2018) =
+
+* Fixed: Issue where iframe height might be cut off + additional Gutenberg/block related styling changes.
+
+= Version 4.3.33 (November 6th, 2018) =
+
+* Fixed: Bauhaus version bump.
+
+= Version 4.3.32 (November 6th, 2018) =
+
+* Fixed: Gutenberg/blocks compatibility.
+* Fixed: Fixed issue with YouTube embeds and AdSense code could white screen page.
+* Fixed: PHP7+ warning.
+
+= Version 4.3.31 (October 29th, 2018) =
+
+* Fixed: Prevent CDATA tags being stripped from custom analytics text area entries.
+
+= Version 4.3.30 (October 19th, 2018) =
+
+* Fixed: Script tag attributes being stripped from custom analytics text area entries.
+
+= Version 4.3.29 (October 16th, 2018) =
+
+* Fixed: Add helper file to output WordPress comment form cookie checkbox field for child themes that contain custom comment form layouts.
+* Fixed: Potential XSS vulnerability relating to saving plugin settings in the WordPress admin.
 
 = Version 4.3.28 (May 10th, 2018) =
 

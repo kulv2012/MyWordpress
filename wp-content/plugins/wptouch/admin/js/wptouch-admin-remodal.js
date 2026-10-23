@@ -109,7 +109,7 @@ function wptouchHandleLicensePanel() {
 											jQuery( '.license-free-upgrade-text' ).hide();
 											jQuery( '.license-free-upgrade' ).slideDown();
 											jQuery( document ).on( 'closed', '.remodal', function () {
-												wptouchAdminTriggerReload();
+												window.location.href = 'plugins.php';
 											});
 										} else {
 											jQuery( progressBar ).removeClass( 'bar-success' ).addClass( 'bar-issue' );

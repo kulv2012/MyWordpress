@@ -15,7 +15,7 @@ function foundation_get_page_walker( $walker, $menu_name ) {
 	global $wptouch_pro;
 
 	// Don't do anything for WordPress menus
-	if ( is_array( $wptouch_pro->theme_menus ) && count( $wptouch_pro->theme_menus ) ) {
+	if ( is_array( $wptouch_pro->theme_menus ) && count( (array) $wptouch_pro->theme_menus ) ) {
 		foreach( $wptouch_pro->theme_menus as $menu_info ) {
 			$settings = wptouch_get_settings( $menu_info->settings_domain );
 			$setting_value = $menu_info->setting_name;

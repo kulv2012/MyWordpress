@@ -38,7 +38,7 @@ function wptouch_page_templates_find_all_in_dir( $dir ) {
 			$template->name = $matches[1];
 
 			$template_parts = explode( DIRECTORY_SEPARATOR, $file );
-			$template->location = $template_parts[ count( $template_parts ) - 1 ];
+			$template->location = $template_parts[ count( (array) $template_parts ) - 1 ];
 
 			$templates[ $file ] = $template;
 		}
@@ -70,11 +70,11 @@ function wptouch_admin_render_page_template( $post ) {
 }
 
 function wptouch_page_template_save( $post_id ) {
- 	if ( ! isset( $_POST['mobile_template_box_nonce'] ) ) {
-    	return $post_id;
-    }
+	if ( ! isset( $_POST['mobile_template_box_nonce'] ) ) {
+		return $post_id;
+	}
 
-	$nonce = $_POST['mobile_template_box_nonce'];
+	$nonce = sanitize_text_field( wp_unslash( $_POST['mobile_template_box_nonce'] ) );
 
 	if ( !wp_verify_nonce( $nonce, 'mobile_template_box' ) ) {
 		return $post_id;
@@ -84,15 +84,17 @@ function wptouch_page_template_save( $post_id ) {
     	return $post_id;
     }
 	// Check the user's permissions.
-	if ( 'page' == $_POST['post_type'] ) {
-		if ( ! current_user_can( 'edit_page', $post_id ) )
-			return $post_id;
+	if ( isset($_POST['post_type']) && 'page' == sanitize_text_field( wp_unslash( $_POST['post_type']) ) ) {
+			if ( ! current_user_can( 'edit_page', $post_id ) )
+				return $post_id;
 	} else {
 		if ( !current_user_can( 'edit_post', $post_id ) )
 			return $post_id;
 	}
 
-	$page_template = sanitize_text_field( $_POST['wptouch_mobile_page_template'] );
+	if ( isset( $_POST['wptouch_mobile_page_template'] )) {
+		$page_template = sanitize_text_field( wp_unslash( $_POST['wptouch_mobile_page_template'] ) );
+	}
 
  	// Update the meta field in the database.
  	update_post_meta( $post_id, '_mobile_page_template', $page_template );

@@ -55,10 +55,12 @@ class WPtouchCacheSmash {
 	private function find_in_array_no_case( $needle, $haystack_array ) {
 		$found = false;
 
-		foreach( $haystack_array as $key => $value ) {
-			$new_value = strtolower( $value );
-			if ( $new_value == strtolower( $needle ) ) {
-				$found = true;
+		if ( ! empty( $haystack_array ) ) {
+			foreach( $haystack_array as $key => $value ) {
+				$new_value = strtolower( $value );
+				if ( $new_value == strtolower( $needle ) ) {
+					$found = true;
+				}
 			}
 		}
 
@@ -118,7 +120,7 @@ class WPtouchCacheSmash {
 						$cache_configured = false;
 					}
 
-					if ( !$cache_configured && ( $user_groups = $w3_config->get_array( 'mobile.rgroups' ) ) && is_array( $user_groups ) && count( $user_groups ) > 0 ) {
+					if ( !$cache_configured && ( $user_groups = $w3_config->get_array( 'mobile.rgroups' ) ) && is_array( $user_groups ) && count( (array) $user_groups ) > 0 ) {
 						foreach ( $user_groups as $group ) {
 							if ( $group[ 'enabled' ] && $this->find_in_array_no_case( 'iphone', $group[ 'agents' ] ) && $group[ 'theme' ] == '' && $group[ 'redirect' ] == '' ) {
 								$cache_configured = true;
@@ -183,7 +185,7 @@ class WPtouchCacheSmash {
 
 	public function get_cache_support_url() {
 		if ( $this->is_w3_plugin_detected() || $this->is_wp_super_cache_detected() ) {
-			return "https://support.wptouch.com/support/solutions/articles/5000537668-configuring-cache-plugins-for-wptouch";
+			return "https://support.wptouch.com/article/583-configuring-cache-plugins-for-wptouch";
 		} else if ( $this->is_wordfence_detected() ) {
 			return "https://support.wptouch.com/support/solutions/articles/5000637442-configuring-wordfence-for-wptouch";
 		}

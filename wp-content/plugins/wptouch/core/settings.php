@@ -28,7 +28,7 @@ function wptouch_admin_get_setting_name() {
 }
 
 function wptouch_admin_the_setting_name() {
-	echo wptouch_admin_get_setting_name();
+	echo esc_html(wptouch_admin_get_setting_name());
 }
 
 function wptouch_admin_get_setting_level() {
@@ -48,7 +48,16 @@ function wptouch_admin_get_setting_desc() {
 }
 
 function wptouch_admin_the_setting_desc() {
-	echo wptouch_admin_get_setting_desc();
+	echo wp_kses(wptouch_admin_get_setting_desc(),
+			array(
+				'a' => array(
+					'href'  => array(),
+					'title' => array(),
+					'target' => array(),
+				),
+				'br'     => array(),
+				'em'     => array(),
+				'strong' => array()));
 }
 
 function wptouch_admin_setting_has_tooltip() {
@@ -68,7 +77,7 @@ function wptouch_admin_get_setting_tooltip() {
 }
 
 function wptouch_admin_the_setting_tooltip() {
-	echo htmlspecialchars( wptouch_admin_get_setting_tooltip() );
+	echo esc_html(htmlspecialchars( wptouch_admin_get_setting_tooltip() ));
 }
 
 function wptouch_admin_get_manual_encoded_setting_name( $domain, $name ) {
@@ -84,7 +93,7 @@ function wptouch_admin_get_encoded_setting_name() {
 }
 
 function wptouch_admin_the_encoded_setting_name() {
-	echo wptouch_admin_get_encoded_setting_name();
+	echo esc_html(wptouch_admin_get_encoded_setting_name());
 }
 
 function wptouch_admin_get_split_version( $ver ) {

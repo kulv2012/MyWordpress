@@ -31,7 +31,7 @@ class WPtouchTheme extends stdClass {
 
 			$theme_frags = explode( DIRECTORY_SEPARATOR, trim( $theme_location, DIRECTORY_SEPARATOR ) );
 
-			$this->base = $theme_frags[ count( $theme_frags ) - 1 ];
+			$this->base = $theme_frags[ count( (array) $theme_frags ) - 1 ];
 			$this->name = $this->wptouch_object->get_information_fragment( $style_info, 'Theme Name' );
 			$this->theme_url = $this->wptouch_object->get_information_fragment( $style_info, 'Theme URI' );
 			$this->description = $this->wptouch_object->get_information_fragment( $style_info, 'Description' );

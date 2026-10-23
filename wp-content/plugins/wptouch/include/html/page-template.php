@@ -5,8 +5,8 @@
 	wp_nonce_field( 'mobile_template_box', 'mobile_template_box_nonce' );
 ?>
 <select name="wptouch_mobile_page_template">
-	<option <?php if ( $current_template == '' ) echo 'selected'; ?>><?php _e( 'Default Template' , 'wptouch-pro' ); ?></option>
+	<option <?php if ( $current_template == '' ) echo 'selected'; ?>><?php esc_attr_e( 'Default Template' , 'wptouch-pro' ); ?></option>
 	<?php foreach( $templates as $file => $template ) { ?>
-	<option value="<?php echo $template->location; ?>" <?php if ( $current_template == $template->location ) echo 'selected'; ?>><?php echo $template->name; ?></option>
+	<option value="<?php echo esc_url($template->location); ?>" <?php if ( $current_template == esc_url($template->location) ) echo 'selected'; ?>><?php echo esc_html($template->name); ?></option>
 	<?php } ?>
 </select>

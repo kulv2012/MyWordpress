@@ -33,7 +33,7 @@ function wptouch_the_addon() {
 }
 
 function wptouch_the_addon_classes( $extra_classes = array() ) {
-	echo implode( ' ', wptouch_get_addon_classes( $extra_classes ) ) ;
+	echo esc_html(implode( ' ', wptouch_get_addon_classes( $extra_classes ) ) );
 }
 
 function wptouch_get_addon_classes( $extra_classes = array() ) {
@@ -67,7 +67,7 @@ function wptouch_is_multisite_extension() {
 function wptouch_has_addon_tags() {
 	global $wptouch_cur_addon;
 
-	return ( isset( $wptouch_cur_addon->tags ) && count( $wptouch_cur_addon->tags ) );
+	return ( isset( $wptouch_cur_addon->tags ) && count( (array) $wptouch_cur_addon->tags ) );
 }
 
 function wptouch_get_addon_tags() {
@@ -90,7 +90,7 @@ function wptouch_is_addon_active() {
 }
 
 function wptouch_the_addon_version() {
-	echo wptouch_get_addon_version();
+	echo esc_html(wptouch_get_addon_version());
 }
 
 function wptouch_get_addon_version() {
@@ -111,7 +111,7 @@ function wptouch_addon_info_url() {
 }
 
 function wptouch_the_addon_title() {
-	echo wptouch_get_addon_title();
+	echo esc_html(wptouch_get_addon_title());
 }
 
 function wptouch_get_addon_title() {
@@ -124,7 +124,7 @@ function wptouch_get_addon_title() {
 }
 
 function wptouch_the_addon_base() {
-	echo wptouch_get_addon_base();
+	echo esc_html(wptouch_get_addon_base());
 }
 
 function wptouch_get_addon_base() {
@@ -137,7 +137,7 @@ function wptouch_get_addon_base() {
 }
 
 function wptouch_the_addon_download_url() {
-	echo wptouch_get_addon_download_url();
+	echo esc_html(wptouch_get_addon_download_url());
 }
 
 function wptouch_get_addon_download_url() {
@@ -159,11 +159,11 @@ function wptouch_get_addon_buy_url() {
 }
 
 function wptouch_the_addon_buy_url() {
-	echo wptouch_get_addon_buy_url();
+	echo esc_html(wptouch_get_addon_buy_url());
 }
 
 function wptouch_the_addon_location() {
-	echo wptouch_get_addon_location();
+	echo esc_html(wptouch_get_addon_location());
 }
 
 function wptouch_get_addon_location() {
@@ -184,7 +184,7 @@ function wptouch_the_addon_url() {
 }
 
 function wptouch_the_addon_features() {
-	echo implode( wptouch_get_addon_features(), ', ' );
+	echo esc_html(implode( wptouch_get_addon_features(), ', ' ));
 }
 
 function wptouch_get_addon_features() {
@@ -198,7 +198,7 @@ function wptouch_addon_has_features() {
 }
 
 function wptouch_the_addon_author() {
-	echo wptouch_get_addon_author();
+	echo esc_html(wptouch_get_addon_author());
 }
 
 function wptouch_get_addon_author() {
@@ -211,7 +211,7 @@ function wptouch_get_addon_author() {
 }
 
 function wptouch_the_addon_description() {
-	echo wptouch_get_addon_description();
+	echo esc_html(wptouch_get_addon_description());
 }
 
 function wptouch_get_addon_description() {
@@ -244,7 +244,7 @@ function wptouch_is_addon_in_cloud() {
 }
 
 function wptouch_the_addon_icon() {
-	echo wptouch_get_addon_icon();
+	echo esc_url(wptouch_get_addon_icon());
 }
 
 function wptouch_get_addon_icon() {

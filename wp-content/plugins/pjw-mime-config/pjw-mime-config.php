@@ -39,7 +39,7 @@ class pjw_mime_config
 	var $message_class = "";
 
 	//Constructor
-	function pjw_mime_config() {
+	function __construct() {
 		add_action('admin_menu', array(&$this,'admin_menu'));
 		add_filter('upload_mimes',array(&$this,'upload_mimes'));
 		add_option('pjw_mime_types',$this->default_types,'Additional mime-types for the inline uploader.','no');
@@ -256,4 +256,4 @@ class pjw_mime_config
 }
 
 /* Initialise outselves lambda stylee */
-add_action('plugins_loaded', create_function('','global $pjw_mime_config; $pjw_mime_config = new pjw_mime_config;'));
+add_action('plugins_loaded', function () {global $pjw_mime_config; $pjw_mime_config = new pjw_mime_config;});

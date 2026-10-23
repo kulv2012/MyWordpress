@@ -8,7 +8,6 @@ Installing WPtouch 4 is just like any other WordPress plugin, with the addition 
 - Administrative access in the WordPress admin
 - Filesystem access
 - PHP 5.4.39 or later
-- PHP allow_url_fopen or cURL extension to enable cloud install of themes, extensions, icons and languages
 - MySQL 5 or later
 - WPtouch 1.x - 2.x are not compatible and must be deactivated
 - WPtouch 3.5 or higher is compatible with WPtouch 4, and will be upgraded

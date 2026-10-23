@@ -40,16 +40,286 @@ add_action( 'wptouch_post_process_image_file', 'foundation_process_image_file', 
 
 add_action( 'wptouch_language_insert', 'foundation_add_wpml_lang_switcher', 20 );
 
+add_filter( 'kses_allowed_protocols', 'foundation_allowed_protocols' );
+
+function wptouch_allowed_html() {
+
+	$allowed_tags = array(
+		'a' => array(
+			'class' => array(),
+			'href'  => array(),
+			'rel'   => array(),
+			'title' => array(),
+		),
+		'abbr' => array(
+			'title' => array(),
+		),
+		'audio' => array(
+			'class'  => array(),
+			'id' => array(),
+			'src'    => array(),
+		),
+		'b' => array(),
+		'blockquote' => array(
+			'cite'  => array(),
+		),
+		'button' => array(
+			'type'  => array(),
+			'name'   => array(),
+			'value' => array(),
+			'class' => array(),
+		),
+		'br' => array(),
+		'cite' => array(
+			'title' => array(),
+		),
+		'code' => array(),
+		'del' => array(
+			'datetime' => array(),
+			'title' => array(),
+		),
+		'dd' => array(),
+		'div' => array(
+			'class' => array(),
+			'title' => array(),
+			'style' => array(),
+			'data-post-id' => array(),
+			'data-page' => array(),
+			'style' => array(),
+			'data-pw-mobi' => array(),
+			'id' => array(),
+			'loading' => array(),
+			'role' => array(),
+			'aria-label' => array(),
+			'aria-labelledby' => array(),
+			'aria-describedby' => array(),
+			'aria-live' => array(),
+			'aria-hidden' => array(),
+		),
+		'dl' => array(),
+		'dt' => array(),
+		'em' => array(),
+		'figure' => array(
+			'data-carousel-extra'    => array(),
+			'class'  => array(),
+			'height' => array(),
+			'src'    => array(),
+			'width'  => array(),
+			'height'  => array(),
+			'title'  => array(),
+			'frameborder'  => array(),
+			'allow'  => array(),
+			'allowfullscreen'  => array(),
+		),
+		'form' => array(),
+		'h1' => array(),
+		'h2' => array(),
+		'h3' => array(),
+		'h4' => array(),
+		'h5' => array(),
+		'h6' => array(),
+		'header' => array(),
+		'i' => array(),
+		'iframe' => array(
+			'alt'    => array(),
+			'class'  => array(),
+			'height' => array(),
+			'src'    => array(),
+			'width'  => array(),
+			'height'  => array(),
+			'title'  => array(),
+			'style'  => array(),
+			'frameborder'  => array(),
+			'allow'  => array(),
+			'allowfullscreen'  => array(),
+			'loading' => array(),
+			'sandbox' => array(),
+			'id' => array(),
+			'align' => array(),
+			'name' => array(),
+			'scrolling' => array(),
+			'marginwidth' => array(),
+			'marginheight' => array(),
+		),
+		'img' => array(
+			'alt'    => array(),
+			'class'  => array(),
+			'height' => array(),
+			'src'    => array(),
+			'width'  => array(),
+			'sizes'  => array(),
+			'srcset'  => array(),
+			'data-recalc-dims'  => array(),
+			'data-lazy-loaded'  => array(),
+			'data-attachment-id'  => array(),
+			'data-permalink'  => array(),
+			'data-orig-file' => array(),
+			'data-orig-size' => array(),
+			'data-comments-opened' => array(),
+			'data-image-meta' => array(),
+			'data-image-title' => array(),
+			'data-image-description' => array(),
+			'data-image-caption' => array(),
+			'data-medium-file' => array(),
+			'data-large-file' => array(),
+			'data-gallery-src' => array(),
+			'decoding' => array(),
+			'data-id' => array(),
+			'loading' => array(),
+		),
+		'input' => array(
+			'type'  => array(),
+			'name'   => array(),
+			'value' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'label' => array(
+			'class' => array(),
+			'for' => array(),
+		),
+		'li' => array(
+			'class' => array(),
+		),
+		'link' => array(
+			'rel' => array(),
+			'type' => array(),
+			'href' => array(),
+		),
+		'main' => array(
+			'class' => array(),
+			'id' => array(),
+			'style' => array(),
+		),
+		'mediaelementwrapper' => array(
+			'id' => array(),
+		),
+		'nav' => array(
+			'class' => array(),
+			'id' => array(),
+			'style' => array(),
+		),
+		'nf-errors' => array(),
+		'nf-field' => array(),
+		'nf-fields-wrap' => array(),
+		'nf-section' => array(),
+		'option' => array(
+			'value' => array(),
+		),
+		'ol' => array(
+			'class' => array(),
+		),
+		'p' => array(
+			'class' => array(),
+		),
+		'q' => array(
+			'cite' => array(),
+			'title' => array(),
+		),
+		'script' => array(
+			'type' => array(),
+			'id' => array(),
+			'src' => array(),
+		),
+		'section' => array(
+			'name' => array(),
+			'title' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'select' => array(
+			'name' => array(),
+			'title' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'source' => array(
+			'type' => array(),
+			'src' => array(),
+		),
+		'span' => array(
+			'class' => array(),
+			'title' => array(),
+			'style' => array(),
+		),
+		'strike' => array(),
+		'strong' => array(),
+		'style' => array(
+			'type' => array(),
+		),
+		'table' => array(
+			'name' => array(),
+			'rows' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'thead' => array(
+			'name' => array(),
+			'rows' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'tbody' => array(
+			'name' => array(),
+			'rows' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'tr' => array(
+			'name' => array(),
+			'rows' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'th' => array(
+			'name' => array(),
+			'rows' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'td' => array(
+			'name' => array(),
+			'rows' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'textarea' => array(
+			'name' => array(),
+			'rows' => array(),
+			'style' => array(),
+			'class' => array(),
+			'id' => array(),
+		),
+		'ul' => array(
+			'class' => array(),
+		),
+		'video' => array(
+			'controls' => array(),
+			'src' => array(),
+		),
+	);
+
+	return $allowed_tags;
+}
+
 function foundation_add_wpml_lang_switcher() {
 	$settings = wptouch_get_settings();
-
+	$allowed_html = wptouch_allowed_html();
 	// Check admin panel setting
 	if ( $settings->show_wpml_lang_switcher ) {
 		if ( function_exists( 'icl_get_languages' ) ) {
 			$data = icl_get_languages( 'skip_missing=N&orderby=KEY&order=DIR&link_empty_to=str' );
 			if ( $data ) {
 				echo '<div id="wpml-language-chooser-wrap"><div id="wpml-language-chooser">';
-				echo '<strong>' . __( 'Language: ', 'wptouch-pro' ) . '</strong>';
+				echo wp_kses('<strong>' . __( 'Language: ', 'wptouch-pro' ) . '</strong>',$allowed_html);
 				echo '<select>';
 				foreach ( $data as $lang => $item ) {
 					echo '<option value="' . esc_url( $item['url'] ) . '"';
@@ -248,7 +518,8 @@ function foundation_the_logo_image() {
 
 function foundation_enqueue_color_data() {
 	$colors = foundation_get_theme_colors();
-	if ( is_array( $colors ) && count( $colors ) ) {
+	$allowed_html = wptouch_allowed_html();
+	if ( is_array( $colors ) && count( (array) $colors ) ) {
 		$inline_color_data = '';
 
 		foreach ( $colors as $color ) {
@@ -268,7 +539,7 @@ function foundation_enqueue_color_data() {
 		}
 
 		echo '<style>';
-		echo $inline_color_data;
+		echo wp_kses($inline_color_data,$allowed_html);
 		echo '</style>';
 	}
 }
@@ -349,6 +620,7 @@ function foundation_handle_footer() {
 		 * @param string $output_message The footer message for output.
 		 * @param array  $allowed_tags   The allowed tags for the sanitization function.
 		 */
+		$allowed_html = wptouch_allowed_html();
 		echo wp_kses( apply_filters( 'foundation_footer_message_output', $output_message ), $allowed_tags );
 	}
 }
@@ -375,7 +647,8 @@ function foundation_handle_custom_css_declarations() {
 		 *
 		 * @param string $output_code The css declarations code before output.
 		 */
-		echo apply_filters( 'foundation_footer_css_declarations_output', $output_code );
+		$allowed_html = wptouch_allowed_html();
+		echo wp_kses(apply_filters( 'foundation_footer_css_declarations_output', $output_code ),$allowed_html);
 	}
 }
 
@@ -393,8 +666,10 @@ function foundation_posts_per_page( $query ) {
 
 function foundation_is_theme_using_module( $module_name ) {
 	$theme_data = foundation_get_theme_data();
-
-	return in_array( $module_name, $theme_data->theme_support );
+	if ( ! $theme_data ) {
+		return false;
+	}
+	return in_array( $module_name, (array) $theme_data->theme_support );
 }
 
 function foundation_get_tag_list() {
@@ -765,7 +1040,7 @@ function foundation_load_theme_modules() {
 	 */
 	$theme_data->theme_support = apply_filters( 'wptouch_theme_support', $theme_data->theme_support );
 
-	if ( count( $theme_data->theme_support ) ) {
+	if ( count( (array) $theme_data->theme_support ) ) {
 		foreach ( $theme_data->theme_support as $module ) {
 
 			/**
@@ -868,14 +1143,16 @@ function foundation_body_classes( $classes ) {
 		}
 	}
 
-	// iOS Device
-	if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'iPhone' ) || strpos( $_SERVER['HTTP_USER_AGENT'], 'iPod' ) || strpos( $_SERVER['HTTP_USER_AGENT'], 'iPad' ) ) {
-		$classes[] = 'ios';
-	}
+	if(isset($_SERVER['HTTP_USER_AGENT'])) {
+		// iOS Device
+		if ( strpos( sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])), 'iPhone' ) || strpos( sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])), 'iPod' ) || strpos( sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])), 'iPad' ) ) {
+			$classes[] = 'ios';
+		}
 
-	// Android Device
-	if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Android' ) ) {
-		$classes[] = 'android';
+		// Android Device
+		if ( strpos( sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])), 'Android' ) ) {
+			$classes[] = 'android';
+		}
 	}
 
 	if ( wptouch_should_load_rtl() ) {
@@ -920,7 +1197,7 @@ function foundation_register_theme_color( $setting_name, $desc, $fg_selectors, $
 function foundation_has_theme_colors() {
 	global $foundation_registered_colors;
 
-	return count( $foundation_registered_colors );
+	return count( (array) $foundation_registered_colors );
 }
 
 function foundation_get_theme_colors() {
@@ -956,13 +1233,13 @@ function wptouch_fdn_get_next_post_link() {
 function wptouch_fdn_get_previous_post_link_w_title() {
 	$excluded  = wptouch_fdn_convert_catname_to_id();
 	$prev_post = get_adjacent_post( false, $excluded, true );
-	echo '<a class="prev-post" href="' . esc_url( get_permalink( $prev_post->ID ) ) . '">' . $prev_post->post_title . '</a>';
+	echo '<a class="prev-post" href="' . esc_url( get_permalink( $prev_post->ID ) ) . '">' . esc_html($prev_post->post_title) . '</a>';
 }
 
 function wptouch_fdn_get_next_post_link_w_title() {
 	$excluded  = wptouch_fdn_convert_catname_to_id();
 	$next_post = get_adjacent_post( false, $excluded, false );
-	echo '<a class="next-post" href="' . esc_url( get_permalink( $next_post->ID ) ) . '">' . $next_post->post_title . '</a>';
+	echo '<a class="next-post" href="' . esc_url( get_permalink( $next_post->ID ) ) . '">' . esc_html($next_post->post_title) . '</a>';
 }
 
 function wptouch_fdn_if_next_post_link() {
@@ -991,24 +1268,25 @@ function wptouch_fdn_if_previous_post_link() {
 function wptouch_fdn_archive_title_text() {
 	global $wp_query;
 	$total_results = $wp_query->found_posts;
+	$allowed_html = wptouch_allowed_html();
 
 	if ( ! ( is_home() || is_single() ) ) {
 		echo '<div class="archive-text">';
 	}
 	if ( is_search() ) {
 		echo intval( $total_results ) . '&nbsp;';
-		echo sprintf( __( "search results for '%s'", "wptouch-pro" ), get_search_query() );
+		echo wp_kses(sprintf( __( "search results for '%s'", "wptouch-pro" ), get_search_query() ),$allowed_html);
 	}
 	if ( is_category() ) {
-		echo sprintf( __( "%sCategories &rsaquo;%s %s", "wptouch-pro" ), '<span class="type">', '</span>', esc_html( single_cat_title( "", false ) ) );
+		echo wp_kses(sprintf( __( "%sCategories &rsaquo;%s %s", "wptouch-pro" ), '<span class="type">', '</span>', esc_html( single_cat_title( "", false ) ) ),$allowed_html);
 	} elseif ( is_tag() ) {
-		echo sprintf( __( "Tags &rsaquo; %s", "wptouch-pro" ), esc_html( single_tag_title( " ", false ) ) );
+		echo wp_kses(sprintf( __( "Tags &rsaquo; %s", "wptouch-pro" ), esc_html( single_tag_title( " ", false ) ) ),$allowed_html);
 	} elseif ( is_day() ) {
-		echo sprintf( __( "Archives &rsaquo; %s", "wptouch-pro" ), esc_html( get_the_time( 'F jS, Y' ) ) );
+		echo wp_kses(sprintf( __( "Archives &rsaquo; %s", "wptouch-pro" ), esc_html( get_the_time( 'F jS, Y' ) ) ),$allowed_html);
 	} elseif ( is_month() ) {
-		echo sprintf( __( "Archives &rsaquo; %s", "wptouch-pro" ), esc_html( get_the_time( 'F, Y' ) ) );
+		echo wp_kses(sprintf( __( "Archives &rsaquo; %s", "wptouch-pro" ), esc_html( get_the_time( 'F, Y' ) ) ),$allowed_html);
 	} elseif ( is_year() ) {
-		echo sprintf( __( "Archives &rsaquo; %s", "wptouch-pro" ), esc_html( get_the_time( 'Y' ) ) );
+		echo wp_kses(sprintf( __( "Archives &rsaquo; %s", "wptouch-pro" ), esc_html( get_the_time( 'Y' ) ) ),$allowed_html);
 	} elseif ( get_post_type() ) {
 	}
 	if ( ! ( is_home() || is_single() ) ) {
@@ -1020,21 +1298,22 @@ function wptouch_fdn_archive_title_text() {
 function wptouch_fdn_archive_load_more_text() {
 	global $wp_query;
 	$total_results = $wp_query->found_posts;
+	$allowed_html = wptouch_allowed_html();
 
 	if ( is_category() ) {
-		echo( __( 'Load more from this category', 'wptouch-pro' ) );
+		echo( wp_kses(__( 'Load more from this category', 'wptouch-pro' ) ,$allowed_html));
 	} elseif ( is_tag() ) {
-		echo( __( 'Load more tagged like this', 'wptouch-pro' ) );
+		echo( wp_kses(__( 'Load more tagged like this', 'wptouch-pro' ) ,$allowed_html));
 	} elseif ( is_day() ) {
-		echo( __( 'Load more from this day', 'wptouch-pro' ) );
+		echo( wp_kses(__( 'Load more from this day', 'wptouch-pro' ) ,$allowed_html));
 	} elseif ( is_month() ) {
-		echo( __( 'Load more from this month', 'wptouch-pro' ) );
+		echo( wp_kses(__( 'Load more from this month', 'wptouch-pro' ) ,$allowed_html));
 	} elseif ( is_year() ) {
-		echo( __( 'Load more from this year', 'wptouch-pro' ) );
+		echo( wp_kses(__( 'Load more from this year', 'wptouch-pro' ) ,$allowed_html));
 	} elseif ( get_post_type() == 1 ) {
-		echo( __( 'Load more in this section', 'wptouch-pro' ) );
+		echo( wp_kses(__( 'Load more in this section', 'wptouch-pro' ) ,$allowed_html));
 	} else {
-		echo( __( 'Load more entries', 'wptouch-pro' ) );
+		echo( wp_kses(__( 'Load more entries', 'wptouch-pro' ),$allowed_html ));
 	}
 }
 
@@ -1048,13 +1327,13 @@ function wptouch_fdn_ordered_cat_list( $num, $include_count = true, $taxonomy = 
 	if ( $settings->excluded_categories ) {
 		$new_cats = _foundation_explode_and_trim_taxonomy( $settings->excluded_categories, 'category' );
 
-		if ( is_array( $new_cats ) && count( $new_cats ) ) {
+		if ( is_array( $new_cats ) && count( (array) $new_cats ) ) {
 			$excluded_cats = implode( ',', $new_cats );
 		}
 	}
 
-
-	echo $opening_tag;
+	$allowed_html = wptouch_allowed_html();
+	echo wp_kses($opening_tag,$allowed_html);
 	$sql = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}term_taxonomy INNER JOIN {$wpdb->prefix}terms ON {$wpdb->prefix}term_taxonomy.term_id = {$wpdb->prefix}terms.term_id WHERE taxonomy = '{$taxonomy}' AND {$wpdb->prefix}term_taxonomy.term_id NOT IN ($excluded_cats) AND count >= 1 ORDER BY count DESC LIMIT 0, $num" );
 
 	if ( $sql ) {
@@ -1074,7 +1353,7 @@ function wptouch_fdn_ordered_cat_list( $num, $include_count = true, $taxonomy = 
 					continue;
 				}
 
-				echo "<li><a href=\"" . esc_url( $link ) . "\">" . $result->name;
+				echo "<li><a href=\"" . esc_url( $link ) . "\">" . esc_html($result->name);
 
 				if ( $include_count ) {
 					echo " <span>(" . intval( $result->count ) . ")</span></a>";
@@ -1085,7 +1364,7 @@ function wptouch_fdn_ordered_cat_list( $num, $include_count = true, $taxonomy = 
 			}
 		}
 	}
-	echo $closing_tag;
+	echo wp_kses($closing_tag,$allowed_html);
 }
 
 function wptouch_fdn_hierarchical_cat_list( $num, $include_count = true, $taxonomy = 'category', $opening_tag = '<ul>', $closing_tag = '</ul>' ) {
@@ -1192,7 +1471,7 @@ function wptouch_fdn_hierarchical_cat_list( $num, $include_count = true, $taxono
 	 * @param array  $args   An array of taxonomy-listing arguments.
 	 */
 	$html = apply_filters( 'wp_list_categories', $output, $r );
-
+	
 	if ( $r['echo'] ) {
 		echo wp_kses_post( $html );
 	} else {
@@ -1210,7 +1489,7 @@ function wptouch_fdn_ordered_tag_list( $num ) {
 	if ( $settings->excluded_tags ) {
 		$new_tags = _foundation_explode_and_trim_taxonomy( $settings->excluded_tags, 'post_tag' );
 
-		if ( is_array( $new_tags ) && count( $new_tags ) ) {
+		if ( is_array( $new_tags ) && count( (array) $new_tags ) ) {
 			$excluded_tags = implode( ',', $new_tags );
 		}
 	}
@@ -1381,9 +1660,10 @@ function foundation_inline_styles() {
 	 * @param string Empty string.
 	 */
 	$style_data = apply_filters( 'foundation_inline_style', '' );
+	$allowed_html = wptouch_allowed_html();
 	if ( strlen( $style_data ) ) {
 		echo "\n<!-- Foundation Styles -->\n";
-		echo "<style type='text/css'>\n" . $style_data . "</style>\n";
+		echo "<style type='text/css'>\n" . wp_kses($style_data,$allowed_html) . "</style>\n";
 	}
 }
 
@@ -1434,4 +1714,38 @@ function foundation_sanitize_wptouch_settings( $settings ) {
 	}
 
 	return $settings;
+}
+
+/**
+ * Outputs the comment form's cookie consent checkbox introduced in
+ * WP core v4.9.6. This is used in themes that don't use the standard
+ * WP core comment form via comment_form(), as that function now
+ * outputs this field automatically.
+ */
+function foundation_output_comment_form_cookie_consent_checkbox() {
+	$commenter = wp_get_current_commenter();
+	$consent   = empty( $commenter['comment_author_email'] ) ? '' : ' checked="checked"';
+	$allowed_html = wptouch_allowed_html();
+	?>
+	<p class="comment-form-cookies-consent body-font">
+		<label for="wp-comment-cookies-consent" class="body-font">
+			<input class="body-font" id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes" <?php echo wp_kses($consent,$allowed_html); ?> />
+			Save my name, email, and website in this browser for the next time I comment.
+		</label>
+	</p>
+	<?php
+}
+
+/**
+ * Add sms and other protocols so they are not stripped
+ * from output.
+ *
+ * @param array $protocols List of allowed protocols.
+ *
+ * @return array
+ */
+function foundation_allowed_protocols( $protocols ) {
+	$protocols[] = 'sms';
+
+	return $protocols;
 }

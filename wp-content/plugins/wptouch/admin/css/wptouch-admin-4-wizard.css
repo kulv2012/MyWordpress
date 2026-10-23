@@ -12,7 +12,7 @@
 }
 
 .wptouch-clearfix {
-	display: inline-block;
+	display: block;
 }
 
 html[xmlns] .wptouch-clearfix {

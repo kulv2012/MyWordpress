@@ -105,7 +105,9 @@ function wptouch_modify_enabled_plugins( $enabled_list ) {
 }
 
 function wptouch_is_device_real_ipad() {
-	return ( stripos( $_SERVER[ 'HTTP_USER_AGENT' ], 'ipad' ) !== false );
+	if ( isset($_SERVER[ 'HTTP_USER_AGENT' ])) {
+		return ( stripos( sanitize_text_field(wp_unslash($_SERVER[ 'HTTP_USER_AGENT' ])), 'ipad' ) !== false );
+	}
 }
 
 function wptouch_capture_template_part( $file_name ) {
@@ -168,7 +170,7 @@ function wptouch_cron_backup_settings() {
 
 function wptouch_show_desktop_switch_link() {
 	$switch_html = wptouch_capture_include_file( WPTOUCH_DIR . '/include/html/desktop-switch.php' );
-	echo apply_filters( 'wptouch_desktop_switch_html', $switch_html );
+	echo wp_kses_post(apply_filters( 'wptouch_desktop_switch_html', $switch_html ));
 }
 
 function wptouch_split_string( $str, $chars ) {
@@ -178,7 +180,7 @@ function wptouch_split_string( $str, $chars ) {
 function wptouch_rss_date( $rss_date ) {
 	$date_time = strtotime( $rss_date );
 
-	echo date( 'F jS, Y', $date_time );
+	echo esc_html(date( 'F jS, Y', $date_time ));
 }
 
 function wptouch_in_preview() {
@@ -187,9 +189,9 @@ function wptouch_in_preview() {
 
 function wptouch_get_translated_device_type( $tag ) {
 	if ( $tag == 'smartphone' ) {
-		return __( 'smartphone', 'wptouch-pro' );
+		return esc_html(__( 'smartphone', 'wptouch-pro' ));
 	} else if ( $tag == 'tablet' ) {
-		return __( 'tablet', 'wptouch-pro' );
+		return esc_html(__( 'tablet', 'wptouch-pro' ));
 	}
 }
 
@@ -197,7 +199,7 @@ function wptouch_desktop_switch_link( $echo_result = true ) {
 	$link = wptouch_get_desktop_switch_link();
 
 	if ( $echo_result ) {
-		echo $link;
+		echo esc_url($link);
 	} else {
 		return $link;
 	}
@@ -209,7 +211,7 @@ function wptouch_should_show_desktop_switch_link() {
 }
 
 function wptouch_the_desktop_switch_link() {
-	echo wptouch_get_desktop_switch_link();
+	echo esc_url(wptouch_get_desktop_switch_link());
 }
 
 function wptouch_get_desktop_switch_link() {
@@ -249,7 +251,7 @@ function wptouch_should_show_activation_nag() {
 }
 
 function wptouch_bloginfo( $setting_name ) {
-	echo wptouch_get_bloginfo( $setting_name );
+	echo esc_html(wptouch_get_bloginfo( $setting_name ));
 }
 
 function wptouch_get_bloginfo( $setting_name ) {
@@ -299,12 +301,12 @@ function wptouch_get_bloginfo( $setting_name ) {
 			break;
 		case 'theme_count':
 			$themes = $wptouch_pro->get_available_themes();
-			$setting = esc_html( count( $themes ) );
+			$setting = esc_html( count( (array) $themes ) );
 			break;
 		case 'icon_set_count':
 			$icon_sets = $wptouch_pro->get_available_icon_packs();
 			// Remove the custom icon count
-			$setting = esc_html( count( $icon_sets ) - 1 );
+			$setting = esc_html( count( (array) $icon_sets ) - 1 );
 			break;
 		case 'icon_count':
 			$icon_sets = $wptouch_pro->get_available_icon_packs();
@@ -313,7 +315,7 @@ function wptouch_get_bloginfo( $setting_name ) {
 				if ( $setname == "Custom Icons" ) continue;
 
 				$icons = $wptouch_pro->get_icons_from_packs( $setname );
-				$total_icons += count( $icons );
+				$total_icons += count( (array) $icons );
 			}
 			$setting = esc_html( $total_icons );
 			break;
@@ -403,7 +405,7 @@ function wptouch_get_desktop_bloginfo( $param ) {
 }
 
 function wptouch_desktop_bloginfo( $param ) {
-	echo wptouch_get_desktop_bloginfo( $param );
+	echo wp_kses_post(wptouch_get_desktop_bloginfo( $param ));
 }
 
 function wptouch_can_cloud_install( $theme = true ) {

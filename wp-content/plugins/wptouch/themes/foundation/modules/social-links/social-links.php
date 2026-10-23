@@ -123,7 +123,7 @@ function foundation_social_show_one_link( $href, $social_service, $friendly ) {
 	$link_data->href = $href;
 	$link_data->service = $social_service;
 	$link_data->friendly = $friendly;
-	echo apply_filters( 'foundation_social_show_link', $link, $link_data );
+	echo esc_html(apply_filters( 'foundation_social_show_link', $link, $link_data ));
 }
 
 function foundation_social_links(){
@@ -181,7 +181,11 @@ function foundation_show_social_links_area() {
 	if ( ! empty( $html ) ) :
 		?>
 		<ul class="social-links-wrap">
-		<?php echo $html; ?>
+			<?php
+			$allowed_html = wptouch_allowed_html();
+			$html = html_entity_decode($html);
+			echo wp_kses($html,$allowed_html);
+			?>
 		</ul>
 		<?php
 	endif;

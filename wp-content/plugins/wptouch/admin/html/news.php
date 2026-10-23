@@ -8,9 +8,9 @@
 			<ul>
 			<?php foreach( $rss_items as $item ) { ?>
 				<li>
-					<div class="date"><?php echo $item->get_date( 'F jS, Y' ); ?></div>
-					<a href="<?php echo $item->get_permalink(); ?>" target="_new"><?php echo esc_html( $item->get_title() )	; ?></a>
-					<span class="desc"><?php echo wptouch_split_string( $item->get_description(), 100 ); ?>&hellip;</span>
+					<div class="date"><?php echo esc_html($item->get_date( 'F jS, Y' )); ?></div>
+					<a href="<?php echo esc_url($item->get_permalink()); ?>" target="_new"><?php echo esc_html( $item->get_title() )	; ?></a>
+					<span class="desc"><?php echo wp_kses_post(wptouch_split_string( $item->get_description(), 100 )); ?>&hellip;</span>
 				</li>
 			<?php } ?>
 			</ul>

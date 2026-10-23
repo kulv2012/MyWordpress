@@ -20,7 +20,7 @@
 
 			$k++;
 
-			if ( count( $attachments ) > 1 ) {
+			if ( count( (array) $attachments ) > 1 ) {
 				if ( isset( $attachments[ $k ] ) ) {
 					// get the URL of the next image attachment
 					$next_attachment_url = get_attachment_link( $attachments[ $k ]->ID );

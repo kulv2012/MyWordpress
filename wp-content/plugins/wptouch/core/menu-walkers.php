@@ -7,7 +7,7 @@ function wptouch_save_menu_changes( $old_value, $new_value ) {
 		global $wptouch_pro;
 		$menu_map = $new_value[ 'nav_menu_locations' ];
 
-		if ( is_array( $menu_map ) && count( $menu_map > 0 ) ) {
+		if ( is_array( $menu_map ) && count( (array) $menu_map ) > 0 ) {
 			foreach ( $menu_map as $location => $menu_id ) {
 				if ( strstr( $location, 'wptouch_') ) {
 					$menu_data = wp_get_nav_menu_object( $menu_id );
@@ -142,9 +142,9 @@ function wptouch_output_menu_icon_packs() {
 			<div id="icon-packs">
 			<?php while ( wptouch_have_icon_packs() ) { wptouch_the_icon_pack(); ?>
 
-			<div class="pack" id="pack-<?php echo wptouch_get_icon_pack_class_name(); ?>">
+			<div class="pack" id="pack-<?php echo esc_html(wptouch_get_icon_pack_class_name()); ?>">
 		  		<?php if ( wptouch_have_icons( wptouch_get_icon_pack_name() ) ) { ?>
-					<h3><?php echo wptouch_get_icon_pack_name(); ?></h3>
+					<h3><?php echo esc_html(wptouch_get_icon_pack_name()); ?></h3>
 					<ul>
 					<?php while ( wptouch_have_icons( wptouch_get_icon_pack_name() ) ) { ?>
 						<?php wptouch_the_icon(); ?>
@@ -166,7 +166,7 @@ add_action( 'wp_update_nav_menu_item', 'wptouch_save_menu_icon', 10, 3 );
 
 function wptouch_save_menu_icon( $menu_id, $menu_item_db_id, $args ) {
 	if ( isset( $_POST[ 'menu-item-icon' ] ) && isset( $_POST[ 'menu-item-icon' ][ $menu_item_db_id ] ) ) {
-		$image_file = str_replace( wptouch_check_url_ssl( site_url() ), '', $_POST[ 'menu-item-icon' ][ $menu_item_db_id ] );
+		$image_file = str_replace( wptouch_check_url_ssl( site_url() ), '', sanitize_text_field(wp_unslash($_POST[ 'menu-item-icon' ][ $menu_item_db_id ])) );
 
 		if ( substr( $image_file, 0, 2 ) == '//' ) {
 			// Fix for sites that implement protocol-relative media URLs, e.g. with Cloudflare plugin
@@ -281,90 +281,90 @@ class WPtouch_Walker_Nav_Menu_Edit extends Walker_Nav_Menu {
 			$submenu_text = 'style="display: none;"';
 
 		?>
-		<li id="menu-item-<?php echo $item_id; ?>" class="<?php echo implode(' ', $classes ); ?>">
+		<li id="menu-item-<?php echo esc_html($item_id); ?>" class="<?php echo esc_html(implode(' ', $classes )); ?>">
 			<dl class="menu-item-bar">
 				<dt class="menu-item-handle">
-					<span class="item-title"><span class="menu-item-title"><?php echo esc_html( $title ); ?></span> <span class="is-submenu" <?php echo $submenu_text; ?>><?php _e( 'sub item' ); ?></span></span>
+					<span class="item-title"><span class="menu-item-title"><?php echo esc_html( $title ); ?></span> <span class="is-submenu" <?php echo esc_html($submenu_text); ?>><?php esc_html_e( 'sub item' ); ?></span></span>
 					<span class="item-controls">
 						<span class="item-type"><?php echo esc_html( $item->type_label ); ?></span>
 						<span class="item-order hide-if-js">
 							<a href="<?php
-								echo wp_nonce_url(
-									add_query_arg(
+								echo esc_url(wp_nonce_url(
+									esc_url( add_query_arg(
 										array(
 											'action' => 'move-up-menu-item',
 											'menu-item' => $item_id,
 										),
 										remove_query_arg($removed_args, admin_url( 'nav-menus.php' ) )
-									),
+									) ),
 									'move-menu_item'
-								);
-							?>" class="item-move-up"><abbr title="<?php esc_attr_e('Move up'); ?>">&#8593;</abbr></a>
+								));
+							?>" class="item-move-up"><abbr title="<?php esc_html_e('Move up'); ?>">&#8593;</abbr></a>
 							|
 							<a href="<?php
-								echo wp_nonce_url(
-									add_query_arg(
+								echo esc_url(wp_nonce_url(
+									esc_url( add_query_arg(
 										array(
 											'action' => 'move-down-menu-item',
 											'menu-item' => $item_id,
 										),
 										remove_query_arg($removed_args, admin_url( 'nav-menus.php' ) )
-									),
+									) ),
 									'move-menu_item'
-								);
-							?>" class="item-move-down"><abbr title="<?php esc_attr_e('Move down'); ?>">&#8595;</abbr></a>
+								));
+							?>" class="item-move-down"><abbr title="<?php esc_html_e('Move down'); ?>">&#8595;</abbr></a>
 						</span>
-						<a class="item-edit" id="edit-<?php echo $item_id; ?>" title="<?php esc_attr_e('Edit Menu Item'); ?>" href="<?php
-							echo ( isset( $_GET['edit-menu-item'] ) && $item_id == $_GET['edit-menu-item'] ) ? admin_url( 'nav-menus.php' ) : add_query_arg( 'edit-menu-item', $item_id, remove_query_arg( $removed_args, admin_url( 'nav-menus.php#menu-item-settings-' . $item_id ) ) );
-						?>"><?php _e( 'Edit Menu Item' ); ?></a>
+						<a class="item-edit" id="edit-<?php echo esc_html($item_id); ?>" title="<?php esc_html_e('Edit Menu Item'); ?>" href="<?php
+							echo esc_url( isset( $_GET['edit-menu-item'] ) && $item_id == $_GET['edit-menu-item']  ? admin_url( 'nav-menus.php' ) : esc_url( add_query_arg( 'edit-menu-item', $item_id, remove_query_arg( $removed_args, admin_url( 'nav-menus.php#menu-item-settings-' . $item_id ) ) ) ) );
+						?>"><?php esc_html_e( 'Edit Menu Item' ); ?></a>
 					</span>
 				</dt>
 			</dl>
 
-			<div class="menu-item-settings" id="menu-item-settings-<?php echo $item_id; ?>">
+			<div class="menu-item-settings" id="menu-item-settings-<?php echo esc_html($item_id); ?>">
 				<?php if( 'custom' == $item->type ) : ?>
 					<p class="field-url description description-wide">
-						<label for="edit-menu-item-url-<?php echo $item_id; ?>">
-							<?php _e( 'URL' ); ?><br />
-							<input type="text" id="edit-menu-item-url-<?php echo $item_id; ?>" class="widefat code edit-menu-item-url" name="menu-item-url[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->url ); ?>" />
+						<label for="edit-menu-item-url-<?php echo esc_html($item_id); ?>">
+							<?php esc_html_e( 'URL' ); ?><br />
+							<input type="text" id="edit-menu-item-url-<?php echo esc_attr($item_id); ?>" class="widefat code edit-menu-item-url" name="menu-item-url[<?php echo esc_attr($item_id); ?>]" value="<?php echo esc_attr( $item->url ); ?>" />
 						</label>
 					</p>
 				<?php endif; ?>
 				<p class="description description-thin">
-					<label for="edit-menu-item-title-<?php echo $item_id; ?>">
-						<?php _e( 'Navigation Label' ); ?><br />
-						<input type="text" id="edit-menu-item-title-<?php echo $item_id; ?>" class="widefat edit-menu-item-title" name="menu-item-title[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->title ); ?>" />
+					<label for="edit-menu-item-title-<?php echo esc_html($item_id); ?>">
+						<?php esc_html_e( 'Navigation Label' ); ?><br />
+						<input type="text" id="edit-menu-item-title-<?php echo esc_attr($item_id); ?>" class="widefat edit-menu-item-title" name="menu-item-title[<?php echo esc_attr($item_id); ?>]" value="<?php echo esc_attr( $item->title ); ?>" />
 					</label>
 				</p>
 				<p class="description description-thin">
-					<label for="edit-menu-item-attr-title-<?php echo $item_id; ?>">
-						<?php _e( 'Title Attribute' ); ?><br />
-						<input type="text" id="edit-menu-item-attr-title-<?php echo $item_id; ?>" class="widefat edit-menu-item-attr-title" name="menu-item-attr-title[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->post_excerpt ); ?>" />
+					<label for="edit-menu-item-attr-title-<?php echo esc_html($item_id); ?>">
+						<?php esc_html_e( 'Title Attribute' ); ?><br />
+						<input type="text" id="edit-menu-item-attr-title-<?php echo esc_attr($item_id); ?>" class="widefat edit-menu-item-attr-title" name="menu-item-attr-title[<?php echo esc_attr($item_id); ?>]" value="<?php echo esc_attr( $item->post_excerpt ); ?>" />
 					</label>
 				</p>
 				<p class="field-link-target description">
-					<label for="edit-menu-item-target-<?php echo $item_id; ?>">
-						<input type="checkbox" id="edit-menu-item-target-<?php echo $item_id; ?>" value="_blank" name="menu-item-target[<?php echo $item_id; ?>]"<?php checked( $item->target, '_blank' ); ?> />
-						<?php _e( 'Open link in a new window/tab' ); ?>
+					<label for="edit-menu-item-target-<?php echo esc_html($item_id); ?>">
+						<input type="checkbox" id="edit-menu-item-target-<?php echo esc_attr($item_id); ?>" value="_blank" name="menu-item-target[<?php echo esc_attr($item_id); ?>]"<?php checked( $item->target, '_blank' ); ?> />
+						<?php esc_html_e( 'Open link in a new window/tab' ); ?>
 					</label>
 				</p>
 				<p class="field-css-classes description description-thin">
-					<label for="edit-menu-item-classes-<?php echo $item_id; ?>">
-						<?php _e( 'CSS Classes (optional)' ); ?><br />
-						<input type="text" id="edit-menu-item-classes-<?php echo $item_id; ?>" class="widefat code edit-menu-item-classes" name="menu-item-classes[<?php echo $item_id; ?>]" value="<?php echo esc_attr( implode(' ', $item->classes ) ); ?>" />
+					<label for="edit-menu-item-classes-<?php echo esc_html($item_id); ?>">
+						<?php esc_html_e( 'CSS Classes (optional)' ); ?><br />
+						<input type="text" id="edit-menu-item-classes-<?php echo esc_attr($item_id); ?>" class="widefat code edit-menu-item-classes" name="menu-item-classes[<?php echo esc_attr($item_id); ?>]" value="<?php echo esc_attr( implode(' ', $item->classes ) ); ?>" />
 					</label>
 				</p>
 				<p class="field-xfn description description-thin">
-					<label for="edit-menu-item-xfn-<?php echo $item_id; ?>">
-						<?php _e( 'Link Relationship (XFN)' ); ?><br />
-						<input type="text" id="edit-menu-item-xfn-<?php echo $item_id; ?>" class="widefat code edit-menu-item-xfn" name="menu-item-xfn[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->xfn ); ?>" />
+					<label for="edit-menu-item-xfn-<?php echo esc_html($item_id); ?>">
+						<?php esc_html_e( 'Link Relationship (XFN)' ); ?><br />
+						<input type="text" id="edit-menu-item-xfn-<?php echo esc_attr($item_id); ?>" class="widefat code edit-menu-item-xfn" name="menu-item-xfn[<?php echo esc_attr($item_id); ?>]" value="<?php echo esc_attr( $item->xfn ); ?>" />
 					</label>
 				</p>
 				<p class="field-description description description-wide">
-					<label for="edit-menu-item-description-<?php echo $item_id; ?>">
-						<?php _e( 'Description' ); ?><br />
-						<textarea id="edit-menu-item-description-<?php echo $item_id; ?>" class="widefat edit-menu-item-description" rows="3" cols="20" name="menu-item-description[<?php echo $item_id; ?>]"><?php echo esc_html( $item->description ); // textarea_escaped ?></textarea>
-						<span class="description"><?php _e('The description will be displayed in the menu if the current theme supports it.'); ?></span>
+					<label for="edit-menu-item-description-<?php echo esc_html($item_id); ?>">
+						<?php esc_html_e( 'Description' ); ?><br />
+						<textarea id="edit-menu-item-description-<?php echo esc_attr($item_id); ?>" class="widefat edit-menu-item-description" rows="3" cols="20" name="menu-item-description[<?php echo esc_attr($item_id); ?>]"><?php echo esc_html( $item->description ); // textarea_escaped ?></textarea>
+						<span class="description"><?php esc_html_e('The description will be displayed in the menu if the current theme supports it.'); ?></span>
 					</label>
 				</p>
 
@@ -372,14 +372,14 @@ class WPtouch_Walker_Nav_Menu_Edit extends Walker_Nav_Menu {
 						$settings = wptouch_get_settings();
 					if ( $this->show_menu_icons && $settings->enable_menu_icons ) {
 				?>
-					<p class="field-icon description wptouch-menu-icon" data-object-id="<?php echo $item_id; ?>">
-						<label for="edit-menu-item-icon-<?php echo $item_id; ?>">
-							<?php _e( 'Mobile Menu Icon' ); ?><br />
+					<p class="field-icon description wptouch-menu-icon" data-object-id="<?php echo esc_html($item_id); ?>">
+						<label for="edit-menu-item-icon-<?php echo esc_html($item_id); ?>">
+							<?php esc_html_e( 'Mobile Menu Icon' ); ?><br />
 						</label>
-						<img class="icon-preview" src="<?php echo wptouch_get_menu_icon( $item->ID ); ?>" alt="menu-icon" style="height: 36px; width: 36px;" />
-						<input type="hidden" id="edit-menu-item-icon-<?php echo $item_id; ?>" class="widefat edit-menu-item-icon" name="menu-item-icon[<?php echo $item_id; ?>]" value="<?php echo esc_attr( wptouch_get_menu_icon( $item->ID ) ); ?>" />
-						<a tabindex="0" role="button" class="button change_icon" data-toggle="wptouch-popover" title="<?php _e( 'WPtouch Icons', 'wptouch-pro' ); ?>"><?php _e( 'Change Icon', 'wptouch-pro' ); ?></a>
-						<a role="button" style="display:none" class="remove_icon"<?php if ( wptouch_get_menu_icon( $item->ID ) == wptouch_get_site_default_icon() ) { echo ' style="display: none;"'; } ?>><?php _e( 'Use Default', 'wptouch-pro' ); ?></a>
+						<img class="icon-preview" src="<?php echo esc_html(wptouch_get_menu_icon( $item->ID )); ?>" alt="menu-icon" style="height: 36px; width: 36px;" />
+						<input type="hidden" id="edit-menu-item-icon-<?php echo esc_html($item_id); ?>" class="widefat edit-menu-item-icon" name="menu-item-icon[<?php echo esc_html($item_id); ?>]" value="<?php echo esc_attr( wptouch_get_menu_icon( $item->ID ) ); ?>" />
+						<a tabindex="0" role="button" class="button change_icon" data-toggle="wptouch-popover" title="<?php esc_html_e( 'WPtouch Icons', 'wptouch-pro' ); ?>"><?php esc_html_e( 'Change Icon', 'wptouch-pro' ); ?></a>
+						<a role="button" style="display:none" class="remove_icon"<?php if ( wptouch_get_menu_icon( $item->ID ) == wptouch_get_site_default_icon() ) { echo ' style="display: none;"'; } ?>><?php esc_html_e( 'Use Default', 'wptouch-pro' ); ?></a>
 					</p>
 				<?php
 					}
@@ -387,41 +387,41 @@ class WPtouch_Walker_Nav_Menu_Edit extends Walker_Nav_Menu {
 
 				<p class="field-move hide-if-no-js description description-wide">
 					<label>
-						<span><?php _e( 'Move' ); ?></span>
-						<a href="#" class="menus-move menus-move-up" data-dir="up"><?php _e( 'Up one' ); ?></a>
-						<a href="#" class="menus-move menus-move-down" data-dir="down"><?php _e( 'Down one' ); ?></a>
+						<span><?php esc_html_e( 'Move' ); ?></span>
+						<a href="#" class="menus-move menus-move-up" data-dir="up"><?php esc_html_e( 'Up one' ); ?></a>
+						<a href="#" class="menus-move menus-move-down" data-dir="down"><?php esc_html_e( 'Down one' ); ?></a>
 						<a href="#" class="menus-move menus-move-left" data-dir="left"></a>
 						<a href="#" class="menus-move menus-move-right" data-dir="right"></a>
-						<a href="#" class="menus-move menus-move-top" data-dir="top"><?php _e( 'To the top' ); ?></a>
+						<a href="#" class="menus-move menus-move-top" data-dir="top"><?php esc_html_e( 'To the top' ); ?></a>
 					</label>
 				</p>
 
 				<div class="menu-item-actions description-wide submitbox">
 					<?php if( 'custom' != $item->type && $original_title !== false ) : ?>
 						<p class="link-to-original">
-							<?php printf( __('Original: %s'), '<a href="' . esc_attr( $item->url ) . '">' . esc_html( $original_title ) . '</a>' ); ?>
+							<?php printf( esc_html( __( 'Original: %s' ) ), esc_html( '<a href="' . $item->url . '">' . $original_title  . '</a>' ) ); ?>
 						</p>
 					<?php endif; ?>
-					<a class="item-delete submitdelete deletion" id="delete-<?php echo $item_id; ?>" href="<?php
-					echo wp_nonce_url(
-						add_query_arg(
+					<a class="item-delete submitdelete deletion" id="delete-<?php echo esc_html($item_id); ?>" href="<?php
+					echo esc_url(wp_nonce_url(
+						esc_url( add_query_arg(
 							array(
 								'action' => 'delete-menu-item',
 								'menu-item' => $item_id,
 							),
 							admin_url( 'nav-menus.php' )
-						),
+						) ),
 						'delete-menu_item_' . $item_id
-					); ?>"><?php _e( 'Remove' ); ?></a> <span class="meta-sep hide-if-no-js"> | </span> <a class="item-cancel submitcancel hide-if-no-js" id="cancel-<?php echo $item_id; ?>" href="<?php echo esc_url( add_query_arg( array( 'edit-menu-item' => $item_id, 'cancel' => time() ), admin_url( 'nav-menus.php' ) ) );
-						?>#menu-item-settings-<?php echo $item_id; ?>"><?php _e('Cancel'); ?></a>
+					)); ?>"><?php esc_html_e( 'Remove' ); ?></a> <span class="meta-sep hide-if-no-js"> | </span> <a class="item-cancel submitcancel hide-if-no-js" id="cancel-<?php echo esc_html($item_id); ?>" href="<?php echo esc_url( add_query_arg( array( 'edit-menu-item' => $item_id, 'cancel' => time() ), admin_url( 'nav-menus.php' ) ) );
+						?>#menu-item-settings-<?php echo esc_html($item_id); ?>"><?php esc_html_e('Cancel'); ?></a>
 				</div>
 
-				<input class="menu-item-data-db-id" type="hidden" name="menu-item-db-id[<?php echo $item_id; ?>]" value="<?php echo $item_id; ?>" />
-				<input class="menu-item-data-object-id" type="hidden" name="menu-item-object-id[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->object_id ); ?>" />
-				<input class="menu-item-data-object" type="hidden" name="menu-item-object[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->object ); ?>" />
-				<input class="menu-item-data-parent-id" type="hidden" name="menu-item-parent-id[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->menu_item_parent ); ?>" />
-				<input class="menu-item-data-position" type="hidden" name="menu-item-position[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->menu_order ); ?>" />
-				<input class="menu-item-data-type" type="hidden" name="menu-item-type[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->type ); ?>" />
+				<input class="menu-item-data-db-id" type="hidden" name="menu-item-db-id[<?php echo esc_html($item_id); ?>]" value="<?php echo esc_html($item_id); ?>" />
+				<input class="menu-item-data-object-id" type="hidden" name="menu-item-object-id[<?php echo esc_html($item_id); ?>]" value="<?php echo esc_attr( $item->object_id ); ?>" />
+				<input class="menu-item-data-object" type="hidden" name="menu-item-object[<?php echo esc_html($item_id); ?>]" value="<?php echo esc_attr( $item->object ); ?>" />
+				<input class="menu-item-data-parent-id" type="hidden" name="menu-item-parent-id[<?php echo esc_html($item_id); ?>]" value="<?php echo esc_attr( $item->menu_item_parent ); ?>" />
+				<input class="menu-item-data-position" type="hidden" name="menu-item-position[<?php echo esc_html($item_id); ?>]" value="<?php echo esc_attr( $item->menu_order ); ?>" />
+				<input class="menu-item-data-type" type="hidden" name="menu-item-type[<?php echo esc_html($item_id); ?>]" value="<?php echo esc_attr( $item->type ); ?>" />
 			</div><!-- .menu-item-settings-->
 			<ul class="menu-item-transport"></ul>
 		<?php
@@ -451,7 +451,7 @@ function wptouch_menu_walker_get_classes( $item, $has_icon = true ) {
 }
 
 function wptouch_menu_walker_the_classes( $classes ) {
-	echo wptouch_menu_walker_get_classes( $classes );
+	echo esc_html(wptouch_menu_walker_get_classes( $classes ));
 }
 
 class WPtouchProNavMenuWalker extends Walker_Nav_Menu {}

@@ -2,7 +2,7 @@
 	$debug_data = array();
 	if ( isset( $_SERVER[ 'SERVER_SOFTWARE' ] ) ) $debug_data[] = $_SERVER[ 'SERVER_SOFTWARE' ];
 
-	$extensions_to_check = array( 'gd', 'curl', 'exif', 'mcrypt', 'openssl', 'json',' mbstring', 'openssl' );
+	$extensions_to_check = array( 'gd', 'exif', 'mcrypt', 'openssl', 'json',' mbstring', 'openssl' );
 
 	$debug_data[] = 'PHP ' . phpversion() . ' (' . implode( ', ', array_intersect( $extensions_to_check, get_loaded_extensions() ) ) . ')';
 ?>

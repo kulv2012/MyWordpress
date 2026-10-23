@@ -36,7 +36,7 @@ function wptouch_get_custom_icon_image() {
 }
 
 function wptouch_the_custom_icon_image() {
-	echo wptouch_get_custom_icon_image();
+	echo esc_html(wptouch_get_custom_icon_image());
 }
 
 function wptouch_get_custom_icon_name() {
@@ -45,7 +45,7 @@ function wptouch_get_custom_icon_name() {
 }
 
 function wptouch_the_custom_icon_name() {
-	echo wptouch_get_custom_icon_name();
+	echo esc_html(wptouch_get_custom_icon_name());
 }
 
 function wptouch_get_custom_icon_width() {
@@ -54,7 +54,7 @@ function wptouch_get_custom_icon_width() {
 }
 
 function wptouch_the_custom_icon_width() {
-	echo wptouch_get_custom_icon_width();
+	echo esc_html(wptouch_get_custom_icon_width());
 }
 
 function wptouch_get_custom_icon_height() {
@@ -63,6 +63,6 @@ function wptouch_get_custom_icon_height() {
 }
 
 function wptouch_the_custom_icon_height() {
-	echo wptouch_get_custom_icon_height();
+	echo esc_html(wptouch_get_custom_icon_height());
 }
 

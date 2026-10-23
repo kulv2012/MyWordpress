@@ -14,7 +14,7 @@ function wptouch_cache_get_key() {
 
 	// Add the value of the user's cookie
 	if ( isset( $_COOKIE[ WPTOUCH_COOKIE ] ) ) {
-		$cache_key = $cache_key . '_cookie_' . $_COOKIE[ WPTOUCH_COOKIE ];
+		$cache_key = $cache_key . '_cookie_' .  sanitize_key( wp_unslash( $_COOKIE[ WPTOUCH_COOKIE ] ) );
 	}
 
 	return md5( $cache_key );

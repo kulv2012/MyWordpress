@@ -1,58 +1,59 @@
-jQuery( '.wptouch-menu-icon' ).each( function(){
-//	var dataID = jQuery( this ).attr( 'data-object-id' );
-		jQuery( this ).on( 'click', 'img.icon-preview', function(){
-			if ( jQuery( this ).attr( 'src' ) != wptouchMenu.default_icon ) {
-				jQuery( this ).parent().find( 'a.remove_icon' ).show();
-			}
-		});
+jQuery(document).ready(function() {
+    jQuery( '.wptouch-menu-icon' ).each( function(){
+    //	var dataID = jQuery( this ).attr( 'data-object-id' );
+            jQuery( this ).on( 'click', 'img.icon-preview', function(){
+                if ( jQuery( this ).attr( 'src' ) != wptouchMenu.default_icon ) {
+                    jQuery( this ).parent().find( 'a.remove_icon' ).show();
+                }
+            });
 
-	jQuery( this ).on( 'click', 'a.remove_icon', function( e ) {
-		e.preventDefault();
-		jQuery( this ).siblings( 'img.icon-preview' ).attr( 'src', wptouchMenu.default_icon );
-		jQuery( this ).siblings( 'input' ).val('');
-		jQuery( this ).hide();
-	});
-});
+        jQuery( this ).on( 'click', 'a.remove_icon', function( e ) {
+            e.preventDefault();
+            jQuery( this ).siblings( 'img.icon-preview' ).attr( 'src', wptouchMenu.default_icon );
+            jQuery( this ).siblings( 'input' ).val('');
+            jQuery( this ).hide();
+        });
+    });
 
-jQuery( '#icon-packs img' ).live( 'click', function( e ) {
-	e.preventDefault();
-	e.stopImmediatePropagation();
-	var imageSource = jQuery( this ).attr( 'src' );
-	jQuery( '[data-object-id=' + pageId + ']' ).find( 'img.icon-preview' ).attr( 'src', imageSource )
-	jQuery( '[data-object-id=' + pageId + ']' ).find( '.remove_icon' ).show();
-	jQuery( '#edit-menu-item-icon-' + pageId ).val( imageSource );
-});
+    jQuery(document).on( 'click', '#icon-packs img', function( e ) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var imageSource = jQuery( this ).attr( 'src' );
+        jQuery( '[data-object-id=' + pageId + ']' ).find( 'img.icon-preview' ).attr( 'src', imageSource )
+        jQuery( '[data-object-id=' + pageId + ']' ).find( '.remove_icon' ).show();
+        jQuery( '#edit-menu-item-icon-' + pageId ).val( imageSource );
+    });
 
-jQuery( 'a.remove_icon' ).live( 'click', function( e ) {
-	e.preventDefault();
-	jQuery( this ).siblings( 'img.icon-preview' ).attr( 'src', wptouchMenu.default_icon );
-	jQuery( this ).siblings( 'input' ).val('');
-	jQuery( this ).hide();
-});
+    jQuery( 'p.wptouch-menu-icon' ).on( 'click', 'a.remove_icon', function( e ) {
+        e.preventDefault();
+        jQuery( this ).siblings( 'img.icon-preview' ).attr( 'src', wptouchMenu.default_icon );
+        jQuery( this ).siblings( 'input' ).val('');
+        jQuery( this ).hide();
+    });
 
-// Enable popovers
-jQuery( function(){
-		jQuery( '[data-toggle=wptouch-popover]', '.wptouch-menu-icon' ).each( function(){
-			jQuery( this ).popover({
-				trigger: 'click',
-				html : true,
-				placement: 'bottom',
-				content: function() {
-				pageId = jQuery( this ).parent().attr( 'data-object-id' );
-				// move the icon div inside the popover
-				  return jQuery( '#icon-picker' ).html();
-				}
-			});
-		});
+    // Enable popovers
+    jQuery( function(){
+            jQuery( '[data-toggle=wptouch-popover]', '.wptouch-menu-icon' ).each( function(){
+                jQuery( this ).popover({
+                    trigger: 'click',
+                    html : true,
+                    placement: 'bottom',
+                    content: function() {
+                    pageId = jQuery( this ).parent().attr( 'data-object-id' );
+                    // move the icon div inside the popover
+                      return jQuery( '#icon-picker' ).html();
+                    }
+                });
+            });
 
-	// Hide on click outside
-	jQuery( 'body' ).on( 'click', function ( e ) {
-	    if ( jQuery( e.target ).data( 'toggle' ) !== 'wptouch-popover' && jQuery( e.target ).parents( '.wptouch-popover.in' ).length === 0 ) {
-	        jQuery( '.wptouch-popover.in' ).parents( '.wptouch-menu-icon' ).find( 'a.change_icon' ).trigger( 'click' );
-	    }
-	});
-}); // self-executing
-
+        // Hide on click outside
+        jQuery( 'body' ).on( 'click', function ( e ) {
+            if ( jQuery( e.target ).data( 'toggle' ) !== 'wptouch-popover' && jQuery( e.target ).parents( '.wptouch-popover.in' ).length === 0 ) {
+                jQuery( '.wptouch-popover.in' ).parents( '.wptouch-menu-icon' ).find( 'a.change_icon' ).trigger( 'click' );
+            }
+        });
+    }); // self-executing
+}); 
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.

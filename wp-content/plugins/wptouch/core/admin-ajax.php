@@ -36,7 +36,7 @@ function wptouch_admin_handle_ajax( &$wptouch_pro, $ajax_action ) {
 			$wptouch_pro->generate_plugin_hook_list( true );
 
 			$compat_settings = wptouch_get_settings( 'compat' );
-			if ( is_array( $compat_settings->plugin_hooks ) && count( $compat_settings->plugin_hooks ) ) {
+			if ( is_array( $compat_settings->plugin_hooks ) && count( (array) $compat_settings->plugin_hooks ) ) {
 				$changed = false;
 				foreach( $compat_settings->plugin_hooks as $name => $value ) {
 					if ( !isset( $compat_settings->enabled_plugins[ $name ] ) ) {
@@ -100,7 +100,7 @@ function wptouch_admin_handle_ajax( &$wptouch_pro, $ajax_action ) {
 				$result = preg_match_all( "#= Version (.*) =(.*)\n=#iUs", $content, $matches );
 
 				if ( $result ) {
-					$entries = count( $matches[0] );
+					$entries = count( (array) $matches[0] );
 
 					for ( $i = 0; $i < $entries; $i++) {
 						echo '<h4 style="font-family: Helvetica, sans-serif">' . sprintf( __( 'Version %s', 'wptouch-pro' ), $matches[1][$i] ) . '</h4><ul  style="font-family: Helvetica, sans-serif; font-size: 13px">';
@@ -203,7 +203,7 @@ function wptouch_admin_handle_ajax( &$wptouch_pro, $ajax_action ) {
 		 						// If Google, retrieve the site ID
 		 						if ( $search_phrase == 'GoogleAnalyticsObject' ) {
 		 							preg_match( '/\'(UA-.*?)\'/s', $possible_analytics, $id_match );
-		 							if ( count( $id_match ) == 2 ) {
+		 							if ( count( (array) $id_match ) == 2 ) {
 		 								$result_info[ 'site_id' ] = $id_match[ 1 ];
 		 							}
 		 						}

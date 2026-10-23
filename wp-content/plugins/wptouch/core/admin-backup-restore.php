@@ -4,7 +4,7 @@ function wptouch_prune_backup_files( $amount = 2 ) {
 	require_once( WPTOUCH_DIR . '/core/file-operations.php' );
 
 	$all_files = wptouch_get_files_in_directory( WPTOUCH_BACKUP_DIRECTORY, '.txt' );
-	if ( is_array( $all_files ) && count( $all_files ) ) {
+	if ( is_array( $all_files ) && count( (array) $all_files ) ) {
 		$file_data = array();
 
 		foreach( $all_files as $backup_file ) {
@@ -28,7 +28,7 @@ function wptouch_backup_settings() {
 
 	$backup_domains = $wptouch_pro->get_active_setting_domains();
 
-	if ( is_array( $backup_domains ) && count( $backup_domains ) ) {
+	if ( is_array( $backup_domains ) && count( (array) $backup_domains ) ) {
 		$settings_to_save = array();
 
 		foreach( $backup_domains as $domain ) {
@@ -82,7 +82,16 @@ function wptouch_restore_settings( $encoded_string ) {
 	global $wptouch_pro;
 
 	$encoded_settings = base64_decode( $encoded_string );
-	$settings = unserialize( gzuncompress( $encoded_settings ) );
+	$settings = unserialize( gzuncompress( $encoded_settings ) , 
+		["allowed_classes" => 
+			[	'WPtouchSettings',
+				'WPtouchDefaultSettingsBNCID30',
+				'WPtouchDefaultSettingsCompat',
+				'WPtouchDefaultSettingsMultisite',
+				'WPtouchDefaultSettings30'
+			]
+		] 
+	);
 
 	$wptouch_pro->erase_all_settings();
 	if ( is_array( $settings ) ) {

@@ -11,9 +11,9 @@ function pvp_widget_views_init() {
 }
 
 class WP_Widget_PostViews_Plus extends WP_Widget {
-	function WP_Widget_PostViews_Plus() {
+	function __construct() {
 		$widget_ops = array('description' => __('WP-PostViews plus views statistics', 'wp-postviews-plus'));
-		$this->WP_Widget('views-plus', __('Views Stats', 'wp-postviews-plus'), $widget_ops);
+		parent::__construct('views-plus', __('Views Stats', 'wp-postviews-plus'), $widget_ops);
 		add_action('save_post', array(&$this, 'flush_widget_cache'));
 		add_action('deleted_post', array(&$this, 'flush_widget_cache'));
 	}

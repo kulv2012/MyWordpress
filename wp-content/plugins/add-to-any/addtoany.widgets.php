@@ -11,13 +11,13 @@
  */
 class A2A_SHARE_SAVE_Widget extends WP_Widget {
 	
-	/** constructor */
+	/** Constructor */
 	function __construct() {
 		$widget_ops = array( 
-			'description' => 'Share buttons for sharing your content.',
+			'description' => __( 'Share buttons for sharing your content.', 'add-to-any' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', 'AddToAny Share', $widget_ops );
+		parent::__construct( '', __( 'AddToAny Share', 'add-to-any' ), $widget_ops );
 		
 		// Enqueue script if in Customizer preview.
 		// is_customize_preview() @since 4.0.0
@@ -30,7 +30,7 @@ class A2A_SHARE_SAVE_Widget extends WP_Widget {
         wp_enqueue_script( 'addtoany-widget-init', plugins_url( 'addtoany.admin.js', __FILE__ ), array(), '0.1', true );
     }
 	
-	/** Backwards compatibility for A2A_SHARE_SAVE_Widget::display(); usage */
+	/** Backwards compatibility for A2A_SHARE_SAVE_Widget::display(); usage. */
 	public function display( $args = false ) {
 		self::widget( $args, NULL );
 	}
@@ -39,7 +39,7 @@ class A2A_SHARE_SAVE_Widget extends WP_Widget {
 	 * @param array $args
 	 * @param array $instance
 	 */
-	public function widget( $args = array(), $instance ) {
+	public function widget( $args, $instance ) {
 		$defaults = array(
 			'before_widget' => '',
 			'after_widget' => '',
@@ -48,20 +48,19 @@ class A2A_SHARE_SAVE_Widget extends WP_Widget {
 		);
 		
 		$args = wp_parse_args( $args, $defaults );
-		extract( $args );
 		
-		echo $before_widget;
+		echo $args['before_widget'];
 		
 		if ( isset( $instance ) && ! empty( $instance['title'] ) ) {
 			$title = apply_filters( 'widget_title', $instance['title'] );
-			echo $before_title . $title . $after_title;
+			echo $args['before_title'] . $title . $args['after_title'];
 		}
 		
 		ADDTOANY_SHARE_SAVE_KIT( array(
 			"use_current_page" => true,
 		) );
 
-		echo $after_widget;
+		echo $args['after_widget'];
 	}
 	
 	/**
@@ -82,8 +81,8 @@ class A2A_SHARE_SAVE_Widget extends WP_Widget {
 		$title = isset( $instance ) && ! empty( $instance['title'] ) ? __( $instance['title'] ) : '';
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php esc_attr_e( $title ); ?>" />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title:', 'add-to-any' ); ?></label> 
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<p>
 			<a href="options-general.php?page=addtoany"><?php _e('AddToAny Settings', 'add-to-any'); ?>...</a>
@@ -100,13 +99,13 @@ class A2A_SHARE_SAVE_Widget extends WP_Widget {
  */
 class A2A_Follow_Widget extends WP_Widget {
 	
-	/** constructor */
+	/** Constructor */
 	function __construct() {
 		$widget_ops = array( 
-			'description' => 'Follow buttons link to your social media.',
+			'description' => __( 'Follow buttons link to your social media.', 'add-to-any' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', 'AddToAny Follow', $widget_ops );	
+		parent::__construct( '', __( 'AddToAny Follow', 'add-to-any' ), $widget_ops );
 		
 		// Enqueue script if in Customizer preview.
 		// is_customize_preview() @since 4.0.0
@@ -126,7 +125,7 @@ class A2A_Follow_Widget extends WP_Widget {
 	 * @param array $args
 	 * @param array $instance
 	 */
-	public function widget( $args = array(), $instance ) {
+	public function widget( $args, $instance ) {
 		$defaults = array(
 			'before_widget' => '',
 			'after_widget' => '',
@@ -135,25 +134,24 @@ class A2A_Follow_Widget extends WP_Widget {
 		);
 		
 		$args = wp_parse_args( $args, $defaults );
-		extract( $args );
 		
-		echo $before_widget;
+		echo $args['before_widget'];
 		
 		$instance = is_array( $instance ) ? $instance : array();
 		
 		if ( ! empty( $instance['title'] ) ) {
 			$title = apply_filters( 'widget_title', $instance['title'] );
-			echo $before_title . $title . $after_title;
+			echo $args['before_title'] . $title . $args['after_title'];
 		}
 		
 		$active_services = array();
 		
-		// See which services have IDs set
+		// See which services have IDs set.
 		$services = $this->get_follow_services();
 		foreach ( $services as $code => $service ) {
 			$code_id = $code . '_id';
 			if ( ! empty( $instance[ $code_id ] ) ) {
-				// Set ID value
+				// Set ID value.
 				$active_services[ $code ] = array( 'id' => $instance[ $code_id ] );
 			}
 		}
@@ -163,7 +161,7 @@ class A2A_Follow_Widget extends WP_Widget {
 			'icon_size' => ! empty( $instance['icon_size'] ) ? $instance['icon_size'] : '32',
 		) );
 
-		echo $after_widget;
+		echo $args['after_widget'];
 	}
 	
 	/**
@@ -176,7 +174,7 @@ class A2A_Follow_Widget extends WP_Widget {
 		$instance['title'] = sanitize_text_field( $new_instance['title'] );
 		$instance['icon_size'] = sanitize_text_field( $new_instance['icon_size'] );
 		
-		// Accept service IDs
+		// Accept service IDs.
 		$services = $this->get_follow_services();
 		foreach ( $services as $code => $service ) {
 			$code_id = $code . '_id';
@@ -201,7 +199,7 @@ class A2A_Follow_Widget extends WP_Widget {
 		if ( ! empty( $instance['icon_size'] ) ) {
 			$icon_size = $instance['icon_size'];
 		} elseif ( ! empty( $options['icon_size'] ) ) {
-			// Fallback to standard icon size if saved
+			// Fallback to standard icon size if saved.
 			$icon_size = $options['icon_size'];
 		} else {
 			$icon_size = '32';
@@ -209,24 +207,24 @@ class A2A_Follow_Widget extends WP_Widget {
 		
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php esc_attr_e( $title ); ?>" />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title:', 'add-to-any' ); ?></label> 
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'icon_size' ); ?>"><?php _e( 'Icon Size:', 'add-to-any' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'icon_size' ); ?>" name="<?php echo $this->get_field_name( 'icon_size' ); ?>" type="number" max="300" min="10" maxlength="3" step="2" oninput="if(this.value.length > 3) this.value=this.value.slice(0, 3)" placeholder="32" value="<?php esc_attr_e( $icon_size ); ?>">
-			<small>Pixels</small>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'icon_size' ) ); ?>"><?php _e( 'Icon Size:', 'add-to-any' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'icon_size' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'icon_size' ) ); ?>" type="number" max="300" min="10" maxlength="3" step="2" oninput="if(this.value.length > 3) this.value=this.value.slice(0, 3)" placeholder="32" value="<?php echo esc_attr( $icon_size ); ?>">
+			<small><?php esc_html_e( 'Pixels', 'add-to-any' ); ?></small>
 		</p>
 <?php foreach ( $services as $code => $service ) : 
 		$code_id = $code . '_id';
+		$id_accepted = false !== strpos( $service['href'], '${id}' );
 		$id_value = ! empty( $instance[ $code_id ] ) ? $instance[ $code_id ] : '';
-		$label_text = 'feed' == $code ? sprintf( __('%s URL:'), $service['name'] ) : sprintf( __('%s ID:'), $service['name'] );
+		$label_text = $id_accepted ? sprintf( __('%s ID:', 'add-to-any'), $service['name'] ) : sprintf( __('%s URL:', 'add-to-any'), $service['name'] );
 ?>
 		<p>
-			<label for="<?php echo $this->get_field_id( $code_id ); ?>"><?php echo $label_text; ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( $code_id ); ?>" name="<?php echo $this->get_field_name( $code_id ); ?>" type="text" value="<?php esc_attr_e( $id_value ); ?>">
-			<br>
-			<small><?php echo str_replace( '${id}', '<u>ID</u>', $service['href'] ); ?></small>
+			<label for="<?php echo esc_attr( $this->get_field_id( $code_id ) ); ?>"><?php echo esc_attr( $label_text ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( $code_id ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $code_id ) ); ?>" type="text" value="<?php echo esc_attr( $id_value ); ?>">
+			<small><?php echo wp_kses_post( str_replace( '${id}', '<u>ID</u>', $service['href'] ) ); ?></small>
 		</p>
 <?php endforeach; ?>
 		<p>

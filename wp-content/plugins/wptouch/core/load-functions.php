@@ -75,5 +75,5 @@ function wptouch_get_desktop_bloginfo( $param ) {
 }
 
 function wptouch_desktop_bloginfo( $param ) {
-	echo wptouch_get_desktop_bloginfo( $param );
+	echo esc_html(wptouch_get_desktop_bloginfo( $param ));
 }

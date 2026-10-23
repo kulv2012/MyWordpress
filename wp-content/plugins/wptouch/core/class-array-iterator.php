@@ -9,7 +9,7 @@ class WPtouchArrayIterator {
 	function __construct( $a ) {
 		$this->array = $a;
 		$this->cur_pos = 0;
-		$this->count = count( $a );
+		$this->count = count( (array) $a );
 		$this->cur_key = false;
 
 		if ( is_array( $this->array ) ) {

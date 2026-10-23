@@ -59,7 +59,7 @@ function wptouch_register_theme_custom_post_types() {
 		$post_types_to_register = array();
 		$registered_types = wptouch_custom_posts_get_list( true );
 
-		if ( is_array( $post_types_to_preserve ) && count( $post_types_to_preserve ) > 0 ) {
+		if ( is_array( $post_types_to_preserve ) && count( (array) $post_types_to_preserve ) > 0 ) {
 
 			foreach ( $post_types_to_preserve as $type => $object ) {
 				if ( !is_object( $object ) ) {
@@ -156,7 +156,7 @@ function wptouch_custom_posts_render_theme_settings( $page_options ) {
 	$custom_post_settings = array();
 
 	$post_types = wptouch_custom_posts_get_list( true );
-	if ( count( $post_types ) ) {
+	if ( count( (array) $post_types ) ) {
 
 		wptouch_add_page_section(
 			WPTOUCH_ADMIN_SETUP_COMPAT,
@@ -233,7 +233,7 @@ function wptouch_custom_posts_pre_get_posts( $query ) {
 
 			if ( $settings->custom_post_types_in_post_index || ( !is_home() && !is_page() ) ) {
 				$post_types = wptouch_custom_posts_get_list( true );
-				if ( $post_types && count( $post_types )  ) {
+				if ( $post_types && count( (array) $post_types )  ) {
 					$post_type_array = get_option( 'wptouch_custom_post_types' );
 
 					if ( is_array( $post_type_array ) ) {
@@ -243,7 +243,7 @@ function wptouch_custom_posts_pre_get_posts( $query ) {
 					}
 				}
 
-				if ( count( $post_type_array ) ) {
+				if ( count( (array) $post_type_array ) ) {
 					// Determine the original post type in the query
 					$original_post_type = false;
 					if ( isset( $query->queried_object ) ) {
@@ -288,7 +288,7 @@ function wptouch_custom_posts_get_taxonomy( $tax_info = false ) {
 	global $post;
 
 	$taxonomies = wptouch_custom_post_type_get_taxonomies( $post->post_type );
-	if ( $taxonomies && count( $taxonomies ) ) {
+	if ( $taxonomies && count( (array) $taxonomies ) ) {
 		foreach( $taxonomies as $taxonomy ) {
 			$product_terms = wp_get_object_terms( $post->ID, $taxonomy );
 			if ( $product_terms ) {

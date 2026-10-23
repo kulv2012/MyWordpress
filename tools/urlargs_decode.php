@@ -33,7 +33,10 @@ if( $urls != ""){
 
 		 $args = explode_url_query_to_args( $parts['query']) ;
 		 ksort($args);
-		 var_duMP($args);
+         foreach ($args as $key => $value) {
+                 $decodestr .= "$key : $value\n";
+         }
+		 //var_duMP($args);
 	}
 }
 
@@ -41,11 +44,11 @@ if( $urls != ""){
 
 <h2> url 参数格式化, 支持多行. json格式化用<a href='http://json.parser.online.fr'>json online</a></h2>
 <form action='/tools/urlargs_decode.php' method='GET'>
-<textarea name='urls' style="width:1000px;height:300px"><?=$urls?></textarea>
+<textarea name='urls' style="width:1000px;height:100px"><?=$urls?></textarea>
 
 	<input type='submit' value='解码'></input>
 </form>
 
 <h3>解码结果：</h3>
-<textarea name='urls' style="width:1000px;height:300px"><?php echo $decodestr;?></textarea>
+<textarea name='urls' style="width:1000px;height:600px"><?php echo $decodestr;?></textarea>
 

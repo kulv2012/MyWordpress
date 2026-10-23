@@ -152,7 +152,7 @@ function wptouch_customizer_restore_settings( $domain, $settings ) {
 			update_option( 'wptouch_customizer_options_' . $domain, $option_array );
 		} else {
 			foreach ( $settings as $setting => $value ) {
-				if ( in_array( $setting, $customizable_settings[ $domain ] ) || strstr( $setting, 'color' ) || $domain == $current_theme->base ) {
+				if ( in_array( $setting, (array) $customizable_settings[ $domain ] ) || strstr( $setting, 'color' ) || $domain == $current_theme->base ) {
 					set_theme_mod( 'wptouch_' . $setting, $value );
 				}
 			}
@@ -280,7 +280,7 @@ function wptouch_customizer_save( $object ) {
 
 function wptouch_get_customizable_settings() {
 	global $customizable_settings;
-	if ( count( $customizable_settings ) > 0 ) {
+	if ( count( (array) $customizable_settings ) > 0 ) {
 		return $customizable_settings;
 	} else {
 		$panel_options = apply_filters( 'wptouch_admin_page_render_wptouch-admin-theme-settings', false );
@@ -288,7 +288,7 @@ function wptouch_get_customizable_settings() {
 			$customize_settings = $panel_options[ 'Customizer' ];
 		}
 
-		if ( isset( $customize_settings ) && count( $customize_settings->sections ) > 0 ) {
+		if ( isset( $customize_settings ) && count( (array) $customize_settings->sections ) > 0 ) {
 			foreach ( $customize_settings->sections as $section ) {
 				if ( $section->settings ) {
 					foreach ( $section->settings as $setting ) {
@@ -377,7 +377,7 @@ function wptouch_customizer_setup( $wp_customize ) {
 			// set_transient( 'wptouch_customizer_settings', $customize_settings, 60 * 60 );
 		}
 
-		if ( isset( $customize_settings ) && count( $customize_settings->sections ) > 0 ) {
+		if ( isset( $customize_settings ) && count( (array) $customize_settings->sections ) > 0 ) {
 
 			asort( $customize_settings->sections );
 
@@ -629,7 +629,7 @@ function wptouch_customizer_ajax_callbacks() {
 			$colors = foundation_get_theme_colors();
 			foreach( $colors as $color ) {
 			?>
-			wp.customize('wptouch_<?php echo $color->setting; ?>',function( value ) {
+			wp.customize('wptouch_<?php echo esc_html($color->setting); ?>',function( value ) {
 				value.bind( function( to ) {
 					<?php if ( $color->fg_selectors ) { ?>
 					jQuery( '<?php echo esc_attr( $color->fg_selectors ); ?>' ).css('color', to ? to : '' );
@@ -735,7 +735,7 @@ function wptouch_is_customizing_mobile( $skip_override = false ) {
 		return true;
 	}
 
-	if ( wptouch_is_customizing() && $_COOKIE[ 'wptouch_customizer_mode' ] == 'mobile' ) {
+	if ( isset($_COOKIE[ 'wptouch_customizer_mode' ]) && wptouch_is_customizing() && sanitize_text_field(wp_unslash($_COOKIE[ 'wptouch_customizer_mode' ])) == 'mobile' ) {
 		return true;
 	} else {
 		return false;
@@ -839,7 +839,7 @@ function wptouch_customizer_modify_homepage_query( $query_vars ) {
 	$dummy_query = new WP_Query();  // the query isn't run if we don't pass any query vars
 	$dummy_query->parse_query( $query_vars );
 
-	if ( count( $query_vars ) == 0 ) { // Front page
+	if ( count( (array) $query_vars ) == 0 ) { // Front page
 		$query_vars[ 'page_id' ] = $settings->homepage_redirect_wp_target;
 	}
 

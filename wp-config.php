@@ -1,4 +1,5 @@
 <?php
+define('DISABLE_WP_CRON', true);
 /** 
  * WordPress 基础配置文件。
  *
@@ -24,7 +25,7 @@ define('DB_USER', 'wordpress');
 define('DB_PASSWORD', 'workdevelop');
 
 /** MySQL 主机 */
-define('DB_HOST', '127.0.0.1:8306');
+define('DB_HOST', '127.0.0.1:18306');
 
 /** 创建数据表时默认的文字编码 */
 define('DB_CHARSET', 'utf8');
@@ -84,7 +85,8 @@ if ( !defined('ABSPATH') )
 	define('ABSPATH', dirname(__FILE__) . '/');
 
 /** 设置 WordPress 变量和包含文件。 */
+define('WP_POST_REVISIONS', 5);
 require_once(ABSPATH . 'wp-settings.php');
 
 /*只保存最多5个修订版本：http://moesora.com/wordpress-batch-sql-delete-article-revisions/*/
-define('WP_POST_REVISIONS', 5);
+

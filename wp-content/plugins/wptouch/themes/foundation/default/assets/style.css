@@ -75,6 +75,14 @@ iframe {
 	max-width: 100% !important;
 }
 
+.wp-block-video {
+    margin: 0 0 20px;
+}
+
+.wp-block-video video {
+    max-width: 100%;
+}
+
 .light-body {
 	text-shadow: rgba(255,255,255,.2) 0 1px 0;
 }
@@ -92,6 +100,37 @@ sup {
 hr {
 	border: 1px dashed rgba(0,0,0,.2);
 }
+
+figure.wp-block-embed,
+.wp-block-code,
+figure.wp-block-pullquote,
+.wp-block-verse,
+.wp-block-preformatted {
+    margin: 0;
+    max-width: 100%;
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+/* Facebook embed override */
+.wp-block-embed-facebook .fb_iframe_widget_fluid span {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+audio {
+    max-width: 100%;
+}
+
+.wp-block-audio,
+.wp-block-audio.alignright,
+.wp-block-audio.alignwide,
+.wp-block-audio.alignleft,
+.wp-block-audio.alignfull {
+    float: none;
+    margin: 0;
+}
+
 
 .post ul {
 	list-style-type: disc;
@@ -122,7 +161,12 @@ blockquote, q {
 	margin-left: auto !important;
 	margin-right: auto !important;
 	float: none !important;
-	display: block !important;
+}
+
+/* Gutenberg/blocks */
+.post .wp-block-gallery,
+.post .wp-block-gallery li {
+    list-style: none;
 }
 
 .alignleft {
@@ -186,9 +230,6 @@ code, kbd, pre, tt {
 
 var {
 	color: red;
-}
-
-pre {
 }
 
 ins {
@@ -642,12 +683,12 @@ ul.dots li.active,
 
 .sharing-options {
 	text-align: center;
+    display: flex;
+    max-width: 100vw;
 }
 
 .sharing-options a {
-	width: 25%;
-	max-width: 25%;
-	display: block;
+    flex: 1;
 	font-weight: bold;
 	font-size: 90%;
 	background-color: rgba(0,0,0,.05);
@@ -656,6 +697,11 @@ ul.dots li.active,
 	float: left;
 	padding-top: 8px;
 	padding-bottom: 8px;
+}
+
+.sharing-options a + a {
+    border-left: 1px solid #FFFFFF;
+    border-right: 1px solid #FFFFFF;
 }
 
 .sharing-options.long a {
@@ -669,6 +715,14 @@ ul.dots li.active,
 	}
 
 /* @group Default */
+
+.sharing-options .sms-btn:before {
+	content: '\e812';
+	margin-right: 5px;
+	font-family: 'wptouch-icons';
+	font-weight: normal;
+	font-style: normal;
+}
 
 .sharing-options .email-btn:before {
 	content: '\e818';
@@ -694,6 +748,14 @@ ul.dots li.active,
 	font-style: normal;
 }
 
+.sharing-options .reddit-btn:before {
+	content: '\f281';
+	margin-right: 5px;
+	font-family: 'wptouch-icons';
+	font-weight: normal;
+	font-style: normal;
+}
+
 .sharing-options .google-btn:before {
 	content: '\e81c';
 	margin-right: 5px;
@@ -710,36 +772,14 @@ ul.dots li.active,
 	font-style: normal;
 }
 
+.rtl .sharing-options .sms-btn:before,
+.rtl .sharing-options .facebook-btn:before,
+.rtl .sharing-options .twitter-btn:before,
+.rtl .sharing-options .reddit-btn:before,
+.rtl .sharing-options .google-btn:before,
+.rtl .sharing-options .pinterest-btn:before,
 .rtl .sharing-options .email-btn:before {
 	display: none;
-}
-
-.rtl .sharing-options .facebook-btn:before {
-	display: none;
-}
-
-.rtl .sharing-options .twitter-btn:before {
-	display: none;
-}
-
-.rtl .sharing-options .google-btn:before {
-	display: none;
-}
-
-.rtl .sharing-options .pinterest-btn:before {
-	display: none;
-}
-
-.rtl .sharing-options .email-btn:before {
-	display: none;
-}
-
-.rtl .sharing-options .email-btn:after {
-	content: '\e818';
-	margin-left: 5px;
-	font-family: 'wptouch-icons';
-	font-weight: normal;
-	font-style: normal;
 }
 
 .rtl .sharing-options .facebook-btn:after {
@@ -752,6 +792,14 @@ ul.dots li.active,
 
 .rtl .sharing-options .twitter-btn:after {
 	content: '\e81b';
+	margin-left: 5px;
+	font-family: 'wptouch-icons';
+	font-weight: normal;
+	font-style: normal;
+}
+
+.rtl .sharing-options .reddit-btn:after {
+	content: '\f281';
 	margin-left: 5px;
 	font-family: 'wptouch-icons';
 	font-weight: normal;
@@ -782,6 +830,13 @@ ul.dots li.active,
 	font-style: normal;
 }
 
+.rtl .sharing-options .sms-btn:after {
+    content: '\e812';
+    margin-left: 5px;
+    font-family: 'wptouch-icons';
+    font-weight: normal;
+    font-style: normal;
+}
 
 /* @end */
 
@@ -800,6 +855,10 @@ ul.dots li.active,
 	background-color: #8cc1db;
 }
 
+.sharing-options.style-vibrant .reddit-btn {
+	background-color: #d93900;
+}
+
 .sharing-options.style-vibrant .google-btn {
 	background-color: #eb2632;
 }
@@ -810,6 +869,10 @@ ul.dots li.active,
 
 .sharing-options.style-vibrant .email-btn {
 	background-color: #999;
+}
+
+.sharing-options.style-vibrant .sms-btn {
+	background-color: #32CD32;
 }
 
 /* @end */
@@ -1493,5 +1556,4 @@ span.wpcf7-form-control-wrap {
 
 .table-parent {
 	max-width: 100%;
-	overflow: scroll;
 }

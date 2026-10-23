@@ -38,7 +38,7 @@ function wptouch_plugins_generate_hook_list( $wptouch_pro, $settings ) {
 
 			// Default actions
 			if ( preg_match_all( "#add_action\([ ]*[\'\"]+(.*)[\'\"]+,[ ]*[\'\"]+(.*)[\'\"]+[ ]*(\s*[,]\s*+(.*))*\)\s*;#iU", $contents, $matches ) ) {
-				for( $i = 0; $i < count( $matches[0] ); $i++ ) {
+				for( $i = 0; $i < count( (array) $matches[0] ); $i++ ) {
 					if ( strpos( $matches[2][$i], ' ' ) === false ) {
 						$info = new stdClass;
 						$info->hook = $matches[1][$i];
@@ -57,7 +57,7 @@ function wptouch_plugins_generate_hook_list( $wptouch_pro, $settings ) {
 
 			// Default filters
 			if ( preg_match_all( "#add_filter\([ ]*[\'\"]+(.*)[\'\"]+,[ ]*[\'\"]+(.*)[\'\"]+[ ]*(\s*[,]\s*+(.*))*\)\s*;#iU", $contents, $matches ) ) {
-				for( $i = 0; $i < count( $matches[0] ); $i++ ) {
+				for( $i = 0; $i < count( (array) $matches[0] ); $i++ ) {
 					if ( strpos( $matches[2][$i], ' ' ) === false ) {
 						$info = new stdClass;
 						$info->hook = $matches[1][$i];
@@ -95,7 +95,7 @@ function wptouch_plugins_generate_hook_list( $wptouch_pro, $settings ) {
 	}
 
 	$active_plugin_names = array();
-	if ( is_array( $active_plugins ) && count( $active_plugins ) ) {
+	if ( is_array( $active_plugins ) && count( (array) $active_plugins ) ) {
 		foreach( $active_plugins as $plugin ) {
 			if ( !$name = substr( $plugin , 0, strpos( $plugin, DIRECTORY_SEPARATOR ) ) ) {
 				$name = substr( $plugin , 0, strpos( $plugin, '.php' ) );
@@ -106,7 +106,7 @@ function wptouch_plugins_generate_hook_list( $wptouch_pro, $settings ) {
 	}
 
 	$final_hook_list = array();
-	if ( count( $new_plugin_list ) ) {
+	if ( count( (array) $new_plugin_list ) ) {
 		// Filter based on this list
 		$usable_plugins = array();
 		foreach( $new_plugin_list as $name => $info ) {
@@ -148,7 +148,7 @@ function wptouch_plugins_disable( $wptouch_pro, $settings ) {
 				add_action( 'wp', 'wptouch_remove_jetpack_related' );
 			}
 
-			if ( isset( $hook_info->filters ) && count( $hook_info->filters ) ) {
+			if ( isset( $hook_info->filters ) && count( (array) $hook_info->filters ) ) {
 				foreach( $hook_info->filters as $hooks ) {
 					WPTOUCH_DEBUG( WPTOUCH_VERBOSE, "Disable filter [" . $hooks->hook . "] with function [" . $hooks->hook_function . "]" );
 					if ( $hooks->priority ) {
@@ -159,7 +159,7 @@ function wptouch_plugins_disable( $wptouch_pro, $settings ) {
 				}
 			}
 
-			if ( isset( $hook_info->actions ) && count( $hook_info->actions ) ) {
+			if ( isset( $hook_info->actions ) && count( (array) $hook_info->actions ) ) {
 				foreach( $hook_info->actions as $hooks ) {
 					WPTOUCH_DEBUG( WPTOUCH_VERBOSE, "Disable action [" . $hooks->hook . "] with function [" . $hooks->hook_function . "]" );
 					if ( $hooks->priority ) {

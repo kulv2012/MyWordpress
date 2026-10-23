@@ -54,11 +54,11 @@ function foundation_do_concat( $contents ) {
 			}
 		}
 
-		for ( $i = 0; $i < count( $matches[0] ) - 1; $i++ ) {
+		for ( $i = 0; $i < count( (array) $matches[0] ) - 1; $i++ ) {
 			$contents = str_replace( $matches[0][$i], '', $contents );
 		}
 
-		$contents = str_replace( $matches[0][ count( $matches[0] ) - 1 ], "<script type='text/javascript' src='" . WPTOUCH_BASE_CONTENT_URL . $cache_file_suffix . "' defer='defer'></script>", $contents );
+		$contents = str_replace( $matches[0][ count( (array) $matches[0] ) - 1 ], "<script type='text/javascript' src='" . WPTOUCH_BASE_CONTENT_URL . $cache_file_suffix . "' defer='defer'></script>", $contents );
 	}
 
 	return $contents;

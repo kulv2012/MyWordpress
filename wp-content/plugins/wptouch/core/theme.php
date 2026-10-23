@@ -19,9 +19,9 @@ function wptouch_footer() {
 
 function wptouch_title() {
 	if ( is_home() ) {
-		echo wptouch_bloginfo( 'site_title' );
+		echo esc_html(wptouch_bloginfo( 'site_title' ));
 	} else {
-		echo wptouch_bloginfo( 'site_title' ) . wp_title( ' &raquo; ', 0 );
+		echo esc_html(wptouch_bloginfo( 'site_title' ) . wp_title( ' &raquo; ', 0 ));
 	}
 }
 
@@ -42,6 +42,12 @@ function wptouch_the_post() {
 }
 
 function wptouch_the_content() {
+	/*
+	Intentionally un-escaped to allow for 3rd party plugins with custom/obscure DOM 
+	elements to work.  Necessary for full function.
+	Per: https://developer.wordpress.org/apis/security/escaping/
+	"most WordPress functions properly prepare the data for output, and additional escaping is not needed."
+	*/
 	echo apply_filters( 'the_content', wptouch_get_content() );
 }
 
@@ -50,7 +56,7 @@ function wptouch_get_content() {
 }
 
 function wptouch_the_excerpt() {
-	echo wptouch_get_excerpt();
+	echo esc_html(wptouch_get_excerpt());
 }
 
 function wptouch_get_excerpt() {
@@ -58,7 +64,7 @@ function wptouch_get_excerpt() {
 }
 
 function wptouch_footer_classes() {
-	echo wptouch_get_footer_classes();
+	echo esc_html(wptouch_get_footer_classes());
 }
 
 function wptouch_get_footer_classes() {
@@ -362,7 +368,9 @@ function wptouch_the_current_page_url() {
 }
 
 function wptouch_get_current_page_url() {
-	return apply_filters( 'wptouch_current_page_url', $_SERVER['REQUEST_URI'] );
+	if(isset($_SERVER['REQUEST_URI'])) {
+		return apply_filters( 'wptouch_current_page_url', sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])) );
+	}
 }
 
 function wptouch_hex_to_luma( $hex ) {

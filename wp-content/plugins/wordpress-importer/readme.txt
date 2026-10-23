@@ -1,12 +1,13 @@
 === WordPress Importer ===
 Contributors: wordpressdotorg
-Donate link: 
+Donate link: https://wordpressfoundation.org/donate/
 Tags: importer, wordpress
-Requires at least: 3.0
-Tested up to: 3.6
-Stable tag: 0.6
+Requires at least: 5.2
+Tested up to: 6.8
+Requires PHP: 7.2
+Stable tag: 0.9.7
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Import posts, pages, comments, custom fields, categories, tags and more from a WordPress export file.
 
@@ -15,12 +16,12 @@ Import posts, pages, comments, custom fields, categories, tags and more from a W
 The WordPress Importer will import the following content from a WordPress export file:
 
 * Posts, pages and other custom post types
-* Comments
+* Comments and comment meta
 * Custom fields and post meta
-* Categories, tags and terms from custom taxonomies
+* Categories, tags and terms from custom taxonomies and term meta
 * Authors
 
-For further information and instructions please see the [Codex page on Importing Content](http://codex.wordpress.org/Importing_Content#WordPress)
+For further information and instructions please see the [documention on Importing Content](https://wordpress.org/support/article/importing-content/#wordpress).
 
 == Installation ==
 
@@ -38,6 +39,92 @@ If you would prefer to do things manually then follow these instructions:
 1. Go to the Tools -> Import screen, click on WordPress
 
 == Changelog ==
+
+= 0.9.7 =
+* Skip the `_wp_attachment_edit_root_id` meta key on import. It stores an attachment ID from the source site, and attachment IDs change on import, so the imported value could point at an unrelated attachment on the destination site.
+
+= 0.9.6 =
+* Skip the `_wp_font_face_file` meta key on import. Font attachments regenerate this meta locally, and the imported value pointed at a file path from the source site.
+* Prefix bundled vendor namespaces (`Rowbot\URL`, `Brick\Math`, `Psr\Log`, and others) with `VendorPrefix\` to avoid class redefinition errors when another plugin bundles the same libraries.
+* Add a Live Preview blueprint so the plugin can be tried in WordPress Playground from the plugin directory page.
+* Code refactoring: extract single-post processing into a separate process_post() method, continuing the streaming preparation work.
+
+= 0.9.5 =
+* Rewrite CSS URLs in block markup (e.g., cover blocks with background images).
+* Code refactoring: Extract import processing logic into separate methods to prepare for future streaming support.
+* Update Playwright and @playwright/test dependencies from 1.55.0 to 1.56.1.
+* Clean up vendor-patched dependencies by removing dotfiles and GitHub workflow files.
+
+= 0.9.4 =
+* Fix a bug that caused self-closing blocks to be incorrectly serialized during URL rewriting.
+
+= 0.9.3 =
+* Rewrite attachment URLs to the new URL structure
+
+= 0.9.2 =
+* Rewrite site URLs in block attributes.
+
+= 0.9.1 =
+* Add support for rewriting site URLs in post content and excerpts.
+
+= 0.9.0 =
+* Introduce a new XML parser class `WXR_Parser_XML_Processor` that replaces the
+  deprecated `WXR_Parser_Regex` class.
+
+= 0.8.4 =
+* Fix a bug on deserialization of untrusted input.
+* Update compatibility tested-up-to to WordPress 6.7.2.
+
+= 0.8.3 =
+* Update compatibility tested-up-to to WordPress 6.7.
+* Update call to `post_exists` to include `post_type` in the query
+* PHP 8.4 compatibility fixes.
+
+= 0.8.2 =
+* Update compatibility tested-up-to to WordPress 6.4.2.
+* Update doc URL references.
+* Adjust workflow triggers.
+
+= 0.8.1 =
+* Update compatibility tested-up-to to WordPress 6.2.
+* Update paths to build status badges.
+
+= 0.8 =
+* Update minimum WordPress requirement to 5.2.
+* Update minimum PHP requirement to 5.6.
+* Update compatibility tested-up-to to WordPress 6.1.
+* PHP 8.0, 8.1, and 8.2 compatibility fixes.
+* Fix a bug causing blank lines in content to be ignored when using the Regex Parser.
+* Fix a bug resulting in a PHP fatal error when IMPORT_DEBUG is enabled and a category creation error occurs.
+* Improved Unit testing & automated testing.
+
+= 0.7 =
+* Update minimum WordPress requirement to 3.7 and ensure compatibility with PHP 7.4.
+* Fix bug that caused not importing term meta.
+* Fix bug that caused slashes to be stripped from imported meta data.
+* Fix bug that prevented import of serialized meta data.
+* Fix file size check after download of remote files with HTTP compression enabled.
+* Improve accessibility of form fields by adding missing labels.
+* Improve imports for remote file URLs without name and/or extension.
+* Add support for `wp:base_blog_url` field to allow importing multiple files with WP-CLI.
+* Add support for term meta parsing when using the regular expressions or XML parser.
+* Developers: All PHP classes have been moved into their own files.
+* Developers: Allow to change `IMPORT_DEBUG` via `wp-config.php` and change default value to the value of `WP_DEBUG`.
+
+= 0.6.4 =
+* Improve PHP7 compatibility.
+* Fix bug that caused slashes to be stripped from imported comments.
+* Fix for various deprecation notices including `wp_get_http()` and `screen_icon()`.
+* Fix for importing export files with multiline term meta data.
+
+= 0.6.3 =
+* Add support for import term metadata.
+* Fix bug that caused slashes to be stripped from imported content.
+* Fix bug that caused characters to be stripped inside of CDATA in some cases.
+* Fix PHP notices.
+
+= 0.6.2 =
+* Add `wp_import_existing_post` filter, see [Trac ticket #33721](https://core.trac.wordpress.org/ticket/33721).
 
 = 0.6 =
 * Support for WXR 1.2 and multiple CDATA sections
@@ -60,27 +147,10 @@ an export file is uploaded to a server with bad permissions and WordPress 3.3 or
 = 0.3 =
 * Use an XML Parser if possible
 * Proper import support for nav menus
-* ... and much more, see [Trac ticket #15197](http://core.trac.wordpress.org/ticket/15197)
+* ... and much more, see [Trac ticket #15197](https://core.trac.wordpress.org/ticket/15197)
 
 = 0.1 =
 * Initial release
-
-== Upgrade Notice ==
-
-= 0.6 =
-Support for exports from WordPress 3.4.
-
-= 0.5.2 =
-Fix incorrect error message when the export file could not be uploaded.
-
-= 0.5 =
-Import comment meta and other minor bugfixes and enhancements.
-
-= 0.4 =
-Bug fixes for attachment importing and other small enhancements.
-
-= 0.3 =
-Upgrade for a more robust and reliable experience when importing WordPress export files, and for compatibility with WordPress 3.1.
 
 == Frequently Asked Questions ==
 
@@ -91,7 +161,7 @@ A message like "Fatal error: Allowed memory size of 8388608 bytes exhausted" ind
 
 For those with shared hosting, the best alternative may be to consult hosting support to determine the safest approach for running the import. A host may be willing to temporarily lift the memory limit and/or run the process directly from their end.
 
--- [WordPress Codex: Importing Content](http://codex.wordpress.org/Importing_Content#Before_Importing)
+-- [Support Article: Importing Content](https://wordpress.org/support/article/importing-content/#before-importing)
 
 == Filters ==
 

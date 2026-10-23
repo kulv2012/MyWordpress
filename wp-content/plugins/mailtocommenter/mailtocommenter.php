@@ -28,7 +28,7 @@ if($options['language'] == 1) {
 }else{
 	load_textdomain('mailtocommenter', dirname(__FILE__) . "/mailtocommenter-en_US.mo");
 }
-add_action('comment_post', create_function('$cid', 'return mailtocommenter($cid);'));
+add_action('comment_post', function ($cid) {return mailtocommenter($cid);});
 register_activation_hook(__FILE__, 'init_mailtocommenter');
 register_deactivation_hook(__FILE__,'mailtocommenter_deactivation');
 add_action('admin_menu', 'mailtocommenter_add_option');

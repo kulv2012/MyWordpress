@@ -25,7 +25,7 @@ function wptouch_has_menu( $menu_slug = false ) {
 function wptouch_get_menu_name_from_slug( $menu_slug ) {
 	global $wptouch_pro;
 
-	if ( is_array( $wptouch_pro->theme_menus ) && count( $wptouch_pro->theme_menus ) ) {
+	if ( is_array( $wptouch_pro->theme_menus ) && count( (array) $wptouch_pro->theme_menus ) ) {
 		foreach( $wptouch_pro->theme_menus as $menu_info ) {
 			$settings = wptouch_get_settings( $menu_info->settings_domain );
 
@@ -105,7 +105,29 @@ function wptouch_show_menu( $menu_slug = false, $nav_menu_walker = false, $page_
 	}
 
 	// Render the menu
-	echo apply_filters( 'wptouch_menu_start_html', '<ul class="menu-tree' . ' ' . $parent_link_class . '">' );
+	$allowed_html = array(
+		'a' => array(
+			'href'  => array(),
+			'class'  => array(),
+			'title' => array(),
+			'rel' => array(),
+		),
+		'img' => array(
+			'src'  => array(),
+			'alt' => array(),
+		),
+		'br'     => array(),
+		'ul'     => array(
+			'class'  => array(),
+		),
+		'li'     => array(
+			'class'  => array(),
+		),
+		'em'     => array(),
+		'strong' => array()
+	);
+
+	echo wp_kses(apply_filters( 'wptouch_menu_start_html', '<ul class="menu-tree' . ' ' . $parent_link_class . '">' ), $allowed_html );
 
 	$menu_slugs_to_show = apply_filters( 'wptouch_menu_slugs_to_show', array( $menu_slug ) );
 
@@ -121,7 +143,14 @@ function wptouch_show_menu( $menu_slug = false, $nav_menu_walker = false, $page_
 		_wptouch_show_menu( $menu_slug, $nav_menu_walker, $page_menu_walker, $can_be_disabled );
 	}
 
-	echo apply_filters( 'wptouch_menu_end_html', '</ul>' );
+	echo wp_kses(apply_filters( 'wptouch_menu_end_html', '</ul>' ),array(
+		'a' => array(
+			'href'  => array(),
+			'title' => array(),
+		),
+		'br'     => array(),
+		'em'     => array(),
+		'strong' => array()));
 }
 
 function wptouch_get_menu_icon( $page_id ) {
@@ -173,7 +202,14 @@ function wptouch_get_site_default_icon() {
 }
 
 function wptouch_the_site_default_icon() {
-	echo wptouch_get_site_default_icon();
+	echo wp_kses(wptouch_get_site_default_icon(),array(
+		'a' => array(
+			'href'  => array(),
+			'title' => array(),
+		),
+		'br'     => array(),
+		'em'     => array(),
+		'strong' => array()));
 }
 
 function wptouch_register_theme_menu( $menu_info ) {
@@ -208,5 +244,5 @@ function wptouch_register_theme_menu( $menu_info ) {
 function wptouch_get_registered_theme_count() {
 	global $wptouch_pro;
 
-	return count( $wptouch_pro->theme_menus );
+	return count( (array) $wptouch_pro->theme_menus );
 }

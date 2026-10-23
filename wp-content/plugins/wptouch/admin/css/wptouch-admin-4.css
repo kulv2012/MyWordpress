@@ -75,10 +75,24 @@ a:focus {
 
 #wpbody-content > form {
 	width: 97%;
+	text-align:center;
 }
 
 ul#adminmenu a.wp-has-current-submenu:after, ul#adminmenu>li.current>a.current:after {
 	border-right-color: #454C56;
+}
+
+ul#adminmenu .wptouch-submenu-highlight {
+	background-color: #00C334;
+}
+
+ul#adminmenu .wptouch-submenu-highlight a {
+	font-weight: bold;
+}
+
+ul#adminmenu .wptouch-submenu-highlight a,
+ul#adminmenu .wptouch-submenu-highlight a:hover {
+	color: #FFF;
 }
 
 #wpfooter {
@@ -92,19 +106,34 @@ ul#adminmenu a.wp-has-current-submenu:after, ul#adminmenu>li.current>a.current:a
 	background-color: #fbfafc;
 	width: 96%;
 	max-width: 988px;
+	display:inline-block;
 	margin-left: auto;
 	margin-right: auto;
 	border-radius: 3px;
 	overflow: hidden;
 	position: relative;
+	text-align:left;
 }
 
 #wptouch-settings-content {
+	display: table-cell;
 	padding: 45px;
-	margin-left: 300px;
+	margin-left: 0;
 	background-color: #fff;
 	border-left: 1px solid #e7eaed;
 	min-height: 650px;
+	max-width:570px;
+	min-width:330px;
+	width:100%;
+}
+
+#wptouch-settings-content.custompage {
+	max-width: 100%;
+}
+
+#wptouch-settings-sub-page {
+	margin-left: 300px;
+	width:100%;
 }
 
 #wptouch-settings-area a:focus,#wptouch-settings-area a:active {
@@ -126,6 +155,7 @@ h2.logo-title {
 	max-width: 950px;
 	line-height: 40px;
 	position: relative;
+	text-align:left;
 }
 
 h2.logo-title img {

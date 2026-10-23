@@ -17,7 +17,7 @@ function foundation_admin_panel( $page_options ) {
 	if ( $google_fonts_enabled ) {
 		$fonts = foundation_get_google_font_pairings();
 
-		if ( count( $fonts ) ) {
+		if ( count( (array) $fonts ) ) {
 			$font_defaults = array( 'default' => __( 'Browser Default Fonts', 'wptouch-pro' ) );
 
 			foreach( $fonts as $setting_value => $font_info ) {
@@ -91,11 +91,11 @@ function foundation_google_fonts_init() {
 			$family_string = '';
 			$inline_style_data = '';
 
-			if ( is_array( $selected_font_info ) && count( $selected_font_info ) ) {
+			if ( is_array( $selected_font_info ) && count( (array) $selected_font_info ) ) {
 				$new_families = array();
 
 				// Maintain the module's max of 2 fonts when rendering; we'll let ourselves register more font placements for selection in the advanced type module.
-				if ( count( $selected_font_info ) > 2 ) {
+				if ( count( (array) $selected_font_info ) > 2 ) {
 					$selected_font_info = array_slice( $selected_font_info, 0, 2 );
 				}
 

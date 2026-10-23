@@ -117,7 +117,7 @@ class BNCAPI {
 
 			$server_name = $site_info[0];
 		} else {
-			$server_name = $_SERVER['HTTP_HOST'];
+			$server_name = getenv('HTTP_HOST');
 		}
 
 		if ( strpos( $server_name, ':' ) !== false ) {

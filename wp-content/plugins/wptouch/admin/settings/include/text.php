@@ -12,5 +12,5 @@ function wptouch_admin_get_setting_value() {
 }
 
 function wptouch_admin_the_setting_value() {
-	echo wptouch_admin_get_setting_value();
+	echo esc_attr( wptouch_admin_get_setting_value() );
 }

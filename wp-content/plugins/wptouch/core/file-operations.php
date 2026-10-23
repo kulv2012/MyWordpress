@@ -5,7 +5,7 @@ function wptouch_load_file( $file_name ) {
 
 	$f = fopen( $file_name, 'rb' );
 	if ( $f ) {
-		while ( !feof( $f ) ) {
+		while ( ! feof( $f ) ) {
 			$new_contents = fread( $f, 8192 );
 			$contents = $contents . $new_contents;
 		}
@@ -62,7 +62,7 @@ function wptouch_get_files_in_directory( $directory_name, $extension, $include_d
 	return $files;
 }
 
-function wptouch_remove_file( $dir_name, $f )  {
+function wptouch_remove_file( $dir_name, $f ) {
 	if ( $f == '__MACOSX' ) {
 		wptouch_remove_directory( $dir_name . '/' . $f );
 	}
@@ -77,12 +77,12 @@ function wptouch_remove_directory_files( $dir_name, $file_type = false ) {
 		if ( $dir ) {
 			while ( $f = readdir( $dir ) ) {
 				if ( $f == '.' || $f == '..' ) continue;
-
+				$f = sanitize_file_name($f);
 				if ( !$file_type || strpos( $f, $file_type ) !== false ) {
-					echo 'deleting: ' . $f . "\n";
+					echo 'deleting: ' . esc_html($f) . "\n";
 					wptouch_remove_file( $dir_name, $f );
 				} else {
-					echo 'skipping: ' . $f . "\n";
+					echo 'skipping: ' . esc_html($f) . "\n";
 				}
 			}
 
@@ -146,7 +146,7 @@ function wptouch_get_all_recursive_files( $dir, $file_types, $rel_path = '' ) {
 			if ( is_dir( $dir . '/' . $f ) ) {
 				$files = array_merge( $files, wptouch_get_all_recursive_files( $dir . '/' . $f, $file_types, $rel_path . '/' . $f ) );
 			} else {
-				foreach( $file_types as $file_type ) {
+				foreach ( $file_types as $file_type ) {
 					if ( strpos( $f, $file_type ) !== false ) {
 						$files[] = $rel_path . '/' . $f;
 						break;
@@ -204,17 +204,17 @@ function wptouch_recursive_copy( $source_dir, $dest_dir ) {
 }
 
 function wptouch_is_path_writable( $test_path ) {
-    $isOK = false;
-    $path = trim( $test_path );
-    if ( ( $path != '' ) && is_dir( $path ) && is_writable( $path ) ) {
-        $tmpfile = "mPC_" . uniqid( mt_rand() ) . '.writable';
-        $fullpathname = str_replace( DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path . DIRECTORY_SEPARATOR . $tmpfile );
-        $fp = @fopen( $fullpathname, "w" );
-        if ( $fp !== false ) {
-            $isOK = true;
-        }
-        @fclose( $fp );
-        @unlink( $fullpathname );
-    }
-    return $isOK;
+	$isOK = false;
+	$path = trim( $test_path );
+	if ( ( $path != '' ) && is_dir( $path ) && is_writable( $path ) ) {
+		$tmpfile = "mPC_" . uniqid( mt_rand() ) . '.writable';
+		$fullpathname = str_replace( DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path . DIRECTORY_SEPARATOR . $tmpfile );
+		$fp = @fopen( $fullpathname, "w" );
+		if ( $fp !== false ) {
+			$isOK = true;
+		}
+		@fclose( $fp );
+		@unlink( $fullpathname );
+	}
+	return $isOK;
 }

@@ -1,7 +1,7 @@
 <?php require_once( WPTOUCH_DIR . '/core/settings.php' ); ?>
 <?php $settings = wptouch_get_settings( 'compat' ); ?>
 <?php global $wptouch_pro; ?>
-<?php if ( is_array( $settings->plugin_hooks ) && count( $settings->plugin_hooks ) ) { ?>
+<?php if ( is_array( $settings->plugin_hooks ) && count( (array) $settings->plugin_hooks ) ) { ?>
 	<ul class="plugin-compat-list">
 	<?php foreach( $settings->plugin_hooks as $key => $value ) { ?>
 		<li class="wptouch-setting">

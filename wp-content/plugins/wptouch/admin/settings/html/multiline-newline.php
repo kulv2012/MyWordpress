@@ -18,7 +18,7 @@
 
 	<?php $entries = wptouch_admin_split_setting_newline(); ?>
 
-	<?php if ( count( $entries ) > 0 ) { ?>
+	<?php if ( count( (array) $entries ) > 0 ) { ?>
 		<ul class="<?php wptouch_admin_the_encoded_setting_name(); ?>-list">
 		<?php foreach ( $entries as $entry ) { ?>
 			<?php if ( $entry != '' ) { ?>

@@ -66,7 +66,7 @@ function foundation_base_init() {
 	);
 
 	$foundation_localized_strings = apply_filters( 'foundation_localized_strings', $foundation_strings );
-	if ( count( $foundation_localized_strings ) ) {
+	if ( count( (array) $foundation_localized_strings ) ) {
 		wp_localize_script( 'foundation_base', 'wptouchFdn', $foundation_localized_strings );
 	}
 }

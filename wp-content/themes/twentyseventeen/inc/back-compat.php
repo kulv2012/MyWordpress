@@ -12,7 +12,7 @@
  */
 
 /**
- * Prevent switching to Twenty Seventeen on old versions of WordPress.
+ * Prevents switching to Twenty Seventeen on old versions of WordPress.
  *
  * Switches to the default theme.
  *
@@ -33,11 +33,17 @@ add_action( 'after_switch_theme', 'twentyseventeen_switch_theme' );
  *
  * @since Twenty Seventeen 1.0
  *
- * @global string $wp_version WordPress version.
+ * @global string $wp_version The WordPress version string.
  */
 function twentyseventeen_upgrade_notice() {
-	$message = sprintf( __( 'Twenty Seventeen requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again.', 'twentyseventeen' ), $GLOBALS['wp_version'] );
-	printf( '<div class="error"><p>%s</p></div>', $message );
+	printf(
+		'<div class="error"><p>%s</p></div>',
+		sprintf(
+			/* translators: %s: The current WordPress version. */
+			__( 'Twenty Seventeen requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again.', 'twentyseventeen' ),
+			$GLOBALS['wp_version']
+		)
+	);
 }
 
 /**
@@ -45,12 +51,20 @@ function twentyseventeen_upgrade_notice() {
  *
  * @since Twenty Seventeen 1.0
  *
- * @global string $wp_version WordPress version.
+ * @global string $wp_version The WordPress version string.
  */
 function twentyseventeen_customize() {
-	wp_die( sprintf( __( 'Twenty Seventeen requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again.', 'twentyseventeen' ), $GLOBALS['wp_version'] ), '', array(
-		'back_link' => true,
-	) );
+	wp_die(
+		sprintf(
+			/* translators: %s: The current WordPress version. */
+			__( 'Twenty Seventeen requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again.', 'twentyseventeen' ),
+			$GLOBALS['wp_version']
+		),
+		'',
+		array(
+			'back_link' => true,
+		)
+	);
 }
 add_action( 'load-customize.php', 'twentyseventeen_customize' );
 
@@ -59,11 +73,17 @@ add_action( 'load-customize.php', 'twentyseventeen_customize' );
  *
  * @since Twenty Seventeen 1.0
  *
- * @global string $wp_version WordPress version.
+ * @global string $wp_version The WordPress version string.
  */
 function twentyseventeen_preview() {
 	if ( isset( $_GET['preview'] ) ) {
-		wp_die( sprintf( __( 'Twenty Seventeen requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again.', 'twentyseventeen' ), $GLOBALS['wp_version'] ) );
+		wp_die(
+			sprintf(
+				/* translators: %s: The current WordPress version. */
+				__( 'Twenty Seventeen requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again.', 'twentyseventeen' ),
+				$GLOBALS['wp_version']
+			)
+		);
 	}
 }
 add_action( 'template_redirect', 'twentyseventeen_preview' );

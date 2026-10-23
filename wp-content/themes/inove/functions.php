@@ -604,7 +604,7 @@ function fb_change_mce_options($initArray) {
     return $initArray; 
 } 
 add_filter('tiny_mce_before_init', 'fb_change_mce_options');
-add_filter('wp_default_editor', create_function('', 'return "html";'));
+add_filter('wp_default_editor', function () {return "html";});
 */
 
 

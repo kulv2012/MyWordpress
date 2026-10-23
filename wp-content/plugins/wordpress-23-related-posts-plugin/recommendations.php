@@ -179,7 +179,7 @@ function wp_rp_fetch_related_posts_v2($limit = 10, $exclude_ids = array()) {
 
 		if($options['exclude_categories']) {
 			$exclude_categories = get_categories(array('include' => $options['exclude_categories']));
-			$exclude_categories_labels = array_map(create_function('$c', 'return "C_" . $c->name;'), $exclude_categories);
+			$exclude_categories_labels = array_map(function ($c) {return "C_" . $c->name;}, $exclude_categories);
 		} else {
 			$exclude_categories_labels = array();
 		}
@@ -261,7 +261,7 @@ function wp_rp_fetch_related_posts_v2($limit = 10, $exclude_ids = array()) {
 		$rp->wp_rp_score = $related_posts_with_score_map[$rp->ID];
 	}
 
-	usort($related_posts, create_function('$a,$b', 'return $b->wp_rp_score < $a->wp_rp_score ? -1 : 1;'));
+	usort($related_posts, function ($a,$b) {return $b->wp_rp_score < $a->wp_rp_score ? -1 : 1;});
 
 	$related_posts = array_slice($related_posts, 0, $limit);
 

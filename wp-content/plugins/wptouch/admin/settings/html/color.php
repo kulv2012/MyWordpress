@@ -10,4 +10,4 @@
 
 <?php $colors = json_encode( wptouch_get_desktop_theme_colors() ); ?>
 
-<input type="text" autocomplete="off" class="wptouch-color" data-desktop-palette='<?php echo $colors; ?>' id="<?php wptouch_admin_the_setting_name(); ?>" name="<?php wptouch_admin_the_encoded_setting_name(); ?>" value="<?php wptouch_admin_the_setting_value(); ?>" placeholder="" />
+<input type="text" autocomplete="off" class="wptouch-color" data-desktop-palette='<?php echo $colors; ?>' id="<?php wptouch_admin_the_setting_name(); ?>" name="<?php wptouch_admin_the_encoded_setting_name(); ?>" value="<?php esc_attr( wptouch_admin_the_setting_value() ); ?>" placeholder="" />

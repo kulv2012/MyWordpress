@@ -102,10 +102,12 @@ class WPtouchAddonThemeInstaller {
 			$temp_dir = $this->get_writable_temp_directory( $alternate_path );
 			$temp_name = tempnam( $temp_dir, 'wptouch-' );
 
-			$curl = curl_init( $package );
-			curl_setopt( $curl, CURLOPT_RETURNTRANSFER, true );
-			$data = curl_exec( $curl );
-			curl_close( $curl );
+			$request = new WP_Http;
+			$data = $request->request( $package );
+
+			if (is_array($data)) {
+				$data = implode(', ', $data);
+			}
 
 			$f = fopen( $temp_name, 'wb' );
 			if ( $f ) {

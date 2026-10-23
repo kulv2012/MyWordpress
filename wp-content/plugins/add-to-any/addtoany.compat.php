@@ -1,7 +1,70 @@
 <?php
+
+$plugin = plugin_basename( __FILE__ );
+
+/**
+ * Strips out disallowed HTML using wp_kses_post() while temporarily allowing 
+ * some additional HTML attributes and CSS in a style attribute.
+ */
+function addtoany_kses( $string ) {
+	/**
+	 * Temporarily allow specific CSS properties in a `style` attribute.
+	 * @since WordPress 2.8.1
+	 */
+	add_filter( 'safe_style_css', 'addtoany_kses_allow_css_properties' );
+
+	/**
+	 * Temporarily allow specific CSS declarations in a `style` attribute.
+	 * @since WordPress 5.5.0
+	 */
+	add_filter( 'safecss_filter_attr_allow_css', 'addtoany_kses_allow_css_declarations', 10, 2 );
+
+	// Strip out any disallowed HTML.
+	$string = wp_kses( $string, addtoany_expanded_allowed_html() );
+	
+	// Revert kses filters to originals.
+	remove_filter( 'safe_style_css', 'addtoany_kses_allow_css_properties' );
+	remove_filter( 'safecss_filter_attr_allow_css', 'addtoany_kses_allow_css_declarations', 10, 2 );
+
+	return $string;
+}
+
+/**
+ * Returns `wp_kses_allowed_html( 'post' )` with additional allowed HTML.
+ */
+function addtoany_expanded_allowed_html() {
+	$allowed = wp_kses_allowed_html( 'post' );
+	// Add AMP attributes.
+	$allowed['a']['on'] = true;
+	return $allowed;
+}
+
+/**
+ * Allows some additional CSS properties in a `style` attribute.
+ */
+function addtoany_kses_allow_css_properties( $props ) {
+	$props[] = 'bottom';
+	$props[] = 'left';
+	$props[] = 'right';
+	$props[] = 'top';
+	$props[] = 'transform';
+	return $props;
+}
+
+/**
+ * Allows additional CSS declarations for specific properties in a `style` attribute.
+ */
+function addtoany_kses_allow_css_declarations( $allow_css, $css_test_string ) {
+	$parts = explode( ':', $css_test_string, 2 );
+	if ( 'transform' === $parts[0] ) {
+		// Allow translateX or translateY with a percentage value.
+		return ! ! preg_match( '/^translate[X|Y]\(-?\d{1,6}%\)$/', trim( $parts[1] ) );
+	}
+	return $allow_css;
+}
 	
 /**
- * Load theme compatibility functions
+ * Loads theme compatibility functions.
  */
 function addtoany_load_theme_compat() {
 	add_action( 'loop_start', 'addtoany_excerpt_remove' );
@@ -10,12 +73,12 @@ function addtoany_load_theme_compat() {
 add_action( 'after_setup_theme', 'addtoany_load_theme_compat', -1 );
 
 /**
- * Remove from excerpts where buttons could be redundant or awkward
+ * Removes from excerpts where buttons could be redundant or awkward.
  */
 function addtoany_excerpt_remove() {
 	// If Twenty Sixteen theme
 	if ( 'twentysixteen' == get_stylesheet() || 'twentysixteen' == get_template() ) {
-		// If blog index, single, or archive page, where excerpts are used as "intros"
+		// If blog index, single, or archive page, where excerpts are used as "intros".
 		if ( is_single() || is_archive() || is_home() ) {
 			remove_filter( 'the_excerpt', 'A2A_SHARE_SAVE_add_to_content', 98 );
 		}	
@@ -23,32 +86,24 @@ function addtoany_excerpt_remove() {
 }
 
 /**
- * Load AMP (Accelerated Mobile Pages) compatibility functions
+ * Changes the priority of standard buttons in content to work around a
+ * Jetpack ~v7.8 Related Posts bug that removes content added to AMP posts 
+ * if the content's filter has a priority number greater than 40.
  */
-add_action( 'amp_post_template_css', 'addtoany_amp_additional_css_styles' );
-
-function addtoany_amp_additional_css_styles( $amp_template ) {
-	// CSS only
-	?>
-	.addtoany_list a {
-		padding: 0 4px;
+function addtoany_priority_for_amp_jetpack() {
+	// If the AMP plugin is enabled, the Jetpack plugin is enabled,
+	// and Jetpack's Related Posts module is enabled.
+	if ( class_exists( 'AMP_Autoloader' ) && class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'related-posts' ) ) {
+		// Change priority to 20.
+		add_filter( 'addtoany_content_priority', function() { return 20; } );
 	}
-	.addtoany_list a amp-img {
-		display: inline-block;
-	}
-	<?php
 }
 
-function addtoany_amp_icons_css( $amp_template ) {
-	global $A2A_SHARE_SAVE_amp_icons_css;
-	echo $A2A_SHARE_SAVE_amp_icons_css;
-}
+add_action( 'wp_loaded', 'addtoany_priority_for_amp_jetpack' );
 
 /**
- * Move buttons from WooCommerce product description to WooCommerce's sharing block
+ * Moves buttons from WooCommerce product description to WooCommerce's sharing block.
  */
-add_action( 'woocommerce_share', 'addtoany_woocommerce_share', 10 );
-
 function addtoany_woocommerce_share() {
 	remove_filter( 'the_content', 'A2A_SHARE_SAVE_add_to_content', 98 );
 	remove_filter( 'the_excerpt', 'A2A_SHARE_SAVE_add_to_content', 98 );
@@ -59,23 +114,64 @@ function addtoany_woocommerce_share() {
 	$post_type = get_post_type( get_the_ID() );
 	
 	if ( 
-		// Private post
+		// Private post.
 		get_post_status( get_the_ID() ) == 'private' ||
-		// Sharing disabled on post
+		// Sharing disabled on post.
 		! empty( $sharing_disabled ) ||
-		// Custom post type (usually "product") disabled
+		// Custom post type (usually "product") disabled.
 		( $post_type && isset( $options['display_in_cpt_' . $post_type] ) && $options['display_in_cpt_' . $post_type] == '-1' )
 	) {
 		return;
 	} else {
-		// If a Sharing Header is set
+		// If a Sharing Header is set.
 		if ( ! empty( $options['header'] ) ) {
-			echo '<div class="addtoany_header">' . stripslashes( $options['header'] ) . '</div>';
+			echo wp_kses_post( '<div class="addtoany_header">' . stripslashes( $options['header'] ) . '</div>' );
 		} else {
 			$html_header = '';
 		}
 		
-		// Display share buttons
+		// Display share buttons.
 		ADDTOANY_SHARE_SAVE_KIT();
 	}
 }
+
+add_action( 'woocommerce_share', 'addtoany_woocommerce_share', 10 );
+
+/**
+ * Excludes AddToAny's assets domain from WP Rocket.
+ */
+function addtoany_wp_rocket_exclusion( $excluded ) {
+	$excluded[] = 'static.addtoany.com';
+	return $excluded;
+}
+
+add_filter( 'rocket_minify_excluded_external_js', 'addtoany_wp_rocket_exclusion' );
+
+// Support the `wp-consent-api` plugin's feature proposal for a WP Consent API.
+add_filter( "wp_consent_api_registered_{$plugin}", '__return_true' );
+
+/**
+ * Checks for 3rd party consent using the WP Consent API or Complianz plugin 
+ * and sets the $A2A_3p_consent accordingly.
+ */
+function addtoany_check_3p_consent() {
+	global $A2A_3p_consent;
+	if ( function_exists( 'wp_has_consent' ) ) {
+		$A2A_3p_consent = wp_has_consent( 'marketing' );
+	} elseif ( function_exists( 'cmplz_has_consent' ) ) {
+		$A2A_3p_consent = cmplz_has_consent( 'marketing' );
+	}
+}
+
+add_action( 'init', 'addtoany_check_3p_consent' );
+
+/**
+ * Disables AddToAny's content filter to avoid appearing within the UI of WPBakery's frontend editor.
+ */
+function addtoany_wpbakery_disable_add_to_content( $query ) {
+	if ( function_exists( 'vc_is_page_editable' ) && vc_is_page_editable() ) {
+		remove_filter( 'the_content', 'A2A_SHARE_SAVE_add_to_content', 98 ); 
+	}
+}
+
+add_action( 'wp', 'addtoany_wpbakery_disable_add_to_content' );

@@ -62,11 +62,13 @@ function wptouch_admin_build_network_menu() {
 }
 
 function wptouch_add_sub_page( $sub_page_name, $sub_page_slug, &$options ) {
+	if ( ! is_array( $options ) ) {
+		$options = array();
+	}
 	$sub_page_info = new stdClass;
 	$sub_page_info->name = $sub_page_name;
 	$sub_page_info->slug = $sub_page_slug;
 	$sub_page_info->sections = array();
-
 	$options[ $sub_page_name ] = $sub_page_info;
 }
 
@@ -102,7 +104,10 @@ function wptouch_add_page_section( $sub_page_name, $section_name, $section_slug,
 				$setting->domain = $section->domain;
 			}
 		}
-
+		
+		if(!isset($options[ $sub_page_name ])) {
+			$options[ $sub_page_name ] = new stdClass;
+		}
 		$options[ $sub_page_name ]->sections[ $section_name ] = $section;
 	}
 }
@@ -152,7 +157,7 @@ function wptouch_admin_render_menu() {
 	global $wptouch_panel_slug;
 
 	// Determine which menu generated this page
-	$page_name = $_GET[ 'page' ];
+	$page_name = sanitize_text_field($_GET[ 'page' ]);
 	$admin_panel_name = $page_name . '.php';
 
 	$wptouch_panel_slug = $page_name;
@@ -292,7 +297,7 @@ function wptouch_section_has_visible_settings( $section ) {
 
 	$settings = wptouch_get_settings();
 
-	if ( isset( $section->settings) && is_array( $section->settings ) && count( $section->settings ) ) {
+	if ( isset( $section->settings) && is_array( $section->settings ) && count( (array) $section->settings ) ) {
 		foreach( $section->settings as $setting ) {
 			if ( wptouch_should_show_setting( $setting ) ) {
 				// This setting is viewable

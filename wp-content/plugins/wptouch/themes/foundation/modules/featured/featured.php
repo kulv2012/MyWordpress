@@ -5,7 +5,6 @@ add_action( 'foundation_module_init_mobile', 'foundation_featured_init' );
 add_action( 'wptouch_admin_page_render_wptouch-admin-theme-settings', 'foundation_featured_settings' );
 
 global $foundation_featured_args;
-global $foundation_featured_posts;
 
 function foundation_featured_use_swipe() {
 	return apply_filters( 'foundation_featured_use_swipe', true ) === true;
@@ -100,7 +99,7 @@ function foundation_featured_modify_query( $query ) {
 
 		$post_array = array();
 
-		if ( is_array( $foundation_featured_posts ) && count( $foundation_featured_posts ) > 0 ) {
+		if ( is_array( $foundation_featured_posts ) && count( (array) $foundation_featured_posts ) > 0 ) {
 			foreach( $foundation_featured_posts as $post_id ) {
 				$post_array[] = '-' . $post_id;
 			}
@@ -156,7 +155,7 @@ function foundation_featured_get_slides() {
 				$post_types = array( 'post', 'page' );
 			}
 			$post_ids = explode( ',', str_replace( ' ', '', $settings->featured_post_ids ) );
-			if ( is_array( $post_ids ) && count( $post_ids ) ) {
+			if ( is_array( $post_ids ) && count( (array) $post_ids ) ) {
 				$new_posts = new WP_Query( array( 'post__in'  => $post_ids, 'posts_per_page' => $args[ 'max_search' ], 'post_type' => $post_types, 'orderby' => 'post__in' , 'meta_query' => array( array('key' => '_thumbnail_id') ) ) );
 			}
 			break;
@@ -265,13 +264,15 @@ function foundation_featured_get_slider_classes() {
 }
 
 function foundation_featured_prefix( $args ) {
-	echo $args['before'];
+	$allowed_html = wptouch_allowed_html();
+
+	echo wp_kses($args['before'],$allowed_html);
 
 	if ( foundation_featured_use_swipe() ) {
-		echo "<div id='slider' class='" . implode( ' ', foundation_featured_get_slider_classes() ) . "'>\n";
+		echo wp_kses("<div id='slider' class='" . implode( ' ', foundation_featured_get_slider_classes() ) . "'>\n",$allowed_html);
 		echo "<div class='swipe-wrap'>\n";
 	} else {
-		echo '<div id="slider" class="' . implode( ' ', foundation_featured_get_slider_classes() ) . '">';
+		echo wp_kses('<div id="slider" class="' . implode( ' ', foundation_featured_get_slider_classes() ) . '">',$allowed_html);
 	}
 }
 
@@ -282,8 +283,8 @@ function foundation_featured_postfix( $args ) {
 	} else {
 		echo '</div>';
 	}
-
-	echo $args['after'];
+	$allowed_html = wptouch_allowed_html();
+	echo wp_kses($args['after'],$allowed_html);
 }
 
 function foundation_featured_slider() {

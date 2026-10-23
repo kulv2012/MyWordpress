@@ -98,7 +98,7 @@ function wptouch_get_theme_classes( $extra_classes = array() ) {
 function wptouch_has_theme_tags() {
 	global $wptouch_cur_theme;
 
-	return ( isset( $wptouch_cur_theme->tags ) && count( $wptouch_cur_theme->tags ) );
+	return ( isset( $wptouch_cur_theme->tags ) && count( (array) $wptouch_cur_theme->tags ) );
 }
 
 function wptouch_get_theme_tags() {
@@ -124,7 +124,7 @@ function wptouch_is_theme_active() {
 
 function wptouch_active_theme_has_settings() {
 	$menu = apply_filters( 'wptouch_theme_menu', array() );
-	return count( $menu );
+	return count( (array) $menu );
 }
 
 function wptouch_is_theme_child() {

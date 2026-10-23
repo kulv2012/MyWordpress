@@ -30,9 +30,9 @@ class IXR_Client
         if (!$path) {
             // Assume we have been given a URL instead
             $bits = parse_url($server);
-            $this->server = $bits['host'];
-            $this->port = isset($bits['port']) ? $bits['port'] : 80;
-            $this->path = isset($bits['path']) ? $bits['path'] : '/';
+            $this->server = $bits['host'] ?? '';
+            $this->port = $bits['port'] ?? 80;
+            $this->path = $bits['path'] ?? '/';
 
             // Make absolutely sure we have a path
             if (!$this->path) {
@@ -58,9 +58,15 @@ class IXR_Client
 		self::__construct( $server, $path, $port, $timeout );
 	}
 
-    function query()
+	/**
+	 * @since 1.5.0
+	 * @since 5.5.0 Formalized the existing `...$args` parameter by adding it
+	 *              to the function signature.
+	 *
+	 * @return bool
+	 */
+    function query( ...$args )
     {
-        $args = func_get_args();
         $method = array_shift($args);
         $request = new IXR_Request($method, $args);
         $length = $request->getLength();

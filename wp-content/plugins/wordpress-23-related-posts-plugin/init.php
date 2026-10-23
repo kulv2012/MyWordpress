@@ -212,7 +212,7 @@ function wp_rp_append_posts(&$related_posts, $fetch_function_name, $limit) {
 	$len = sizeof($related_posts);
 	$num_missing_posts = $limit - $len;
 	if ($num_missing_posts > 0) {
-		$exclude_ids = array_map(create_function('$p', 'return $p->ID;'), $related_posts);
+		$exclude_ids = array_map(function ($p) {return $p->ID;}, $related_posts);
 
 		$posts = call_user_func($fetch_function_name, $num_missing_posts, $exclude_ids);
 		if ($posts) {
@@ -437,7 +437,7 @@ function wp_rp_head_resources() {
 
 	$tags = $wpdb->get_col("SELECT DISTINCT(label) FROM " . $wpdb->prefix . "wp_rp_tags WHERE post_id=$post->ID ORDER BY weight desc;", 0);
 	if (!empty($tags)) {
-		$post_tags = '[' . implode(', ', array_map(create_function('$v', 'return "\'" . urlencode(substr($v, strpos($v, \'_\') + 1)) . "\'";'), $tags)) . ']';
+		$post_tags = '[' . implode(', ', array_map(function ($v) {return "'" . urlencode(substr($v, strpos($v, '_') + 1)) . "'";}, $tags)) . ']';
 	} else {
 		$post_tags = '[]';
 	}
